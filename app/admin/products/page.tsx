@@ -267,7 +267,7 @@ export default function ProductsPage() {
                       <TableCell>
                         <div>
                           <div className="font-medium">Rp {product.price.toLocaleString('id-ID')}</div>
-                          {product.discount > 0 && (
+                          {product.discount && product.discount > 0 && (
                             <div className="text-sm text-red-600">{product.discount}% off</div>
                           )}
                         </div>
