@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth';
+import { useAdminAuthStore } from '@/store/admin-auth';
 import { signOut } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { 
@@ -26,13 +26,13 @@ const navigation = [
 
 export default function AdminSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logout, profile } = useAuthStore();
+  const { adminLogout, adminProfile } = useAdminAuthStore();
   const pathname = usePathname();
   const router = useRouter();
 
   const handleLogout = async () => {
     await signOut();
-    logout();
+    adminLogout();
     // Redirect to admin login after logout
     router.push('/admin/login');
   };
@@ -70,11 +70,11 @@ export default function AdminSidebar() {
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
-                {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'A'}
+                {adminProfile?.full_name?.charAt(0) || adminProfile?.email?.charAt(0) || 'A'}
               </div>
               <div>
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
-                  {profile?.full_name || 'Admin'}
+                  {adminProfile?.full_name || 'Admin'}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
                   Administrator

@@ -263,7 +263,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               <div className="text-3xl font-bold text-foreground">
                 {formatPrice(product.price)}
               </div>
-              {product.originalPrice && (
+              {product.originalPrice && product.originalPrice > product.price && (
                 <div className="text-lg text-muted-foreground line-through">
                   {formatPrice(product.originalPrice)}
                 </div>

@@ -89,10 +89,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         
         if (event === 'SIGNED_IN' && session?.user) {
           setUser(session.user);
-          // Only fetch profile if not on admin pages (admin layout handles its own auth)
-          if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/admin')) {
-            await fetchUserProfile(session.user.id);
-          }
+          // Always fetch profile for authenticated users
+          await fetchUserProfile(session.user.id);
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
           setProfile(null);

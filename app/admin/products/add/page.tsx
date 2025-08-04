@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,7 +41,8 @@ const productSchema = z.object({
   category: z.enum(['sepatu', 'tas', 'pakaian']),
   subcategory: z.string().min(1, 'Subcategory is required'),
   brand: z.string().min(1, 'Brand is required'),
-  price: z.number().min(0, 'Price must be positive'),
+  originalPrice: z.number().min(0, 'Original price must be positive'),
+  price: z.number().min(0, 'Final price must be positive'),
   discount: z.number().min(0).max(100).optional(),
   stock: z.number().min(0, 'Stock must be positive'),
   sizes: z.array(z.string()).min(1, 'At least one size is required'),
@@ -64,6 +65,7 @@ export default function AddProductPage() {
       category: 'sepatu',
       subcategory: '',
       brand: '',
+      originalPrice: 0,
       price: 0,
       discount: 0,
       stock: 0,
@@ -74,9 +76,19 @@ export default function AddProductPage() {
   });
 
   const selectedCategory = form.watch('category');
+  const originalPrice = form.watch('originalPrice');
+  const discount = form.watch('discount');
   const availableSizes = selectedCategory === 'sepatu' ? shoeSizes : 
                         selectedCategory === 'pakaian' ? clothingSizes : 
                         ['One Size'];
+
+  // Auto-calculate discounted price
+  useEffect(() => {
+    if (originalPrice && discount !== undefined) {
+      const discountedPrice = originalPrice - (originalPrice * (discount / 100));
+      form.setValue('price', Math.round(discountedPrice));
+    }
+  }, [originalPrice, discount, form]);
 
   const onSubmit = async (data: ProductFormData) => {
     if (images.length === 0) {
@@ -251,13 +263,30 @@ export default function AddProductPage() {
                   <CardTitle>Pricing & Inventory</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="originalPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Origin Price (IDR)</FormLabel>
+                          <FormControl>
+                            <PriceInput 
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <FormField
                       control={form.control}
                       name="price"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Price (IDR)</FormLabel>
+                          <FormLabel>Price after Discount (IDR)</FormLabel>
                           <FormControl>
                             <PriceInput 
                               value={field.value}

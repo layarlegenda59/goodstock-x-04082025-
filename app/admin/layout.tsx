@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { useAuthStore } from '@/store/auth';
+import { useAdminAuthStore } from '@/store/admin-auth';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { Loader2 } from 'lucide-react';
@@ -13,44 +13,45 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, profile, isLoading, setUser, setProfile, setLoading } = useAuthStore();
+  const { adminUser, adminProfile, isAdminLoading, setAdminUser, setAdminProfile, setAdminLoading } = useAdminAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
   // Single useEffect to handle all redirects
   useEffect(() => {
-    if (!isLoading) {
-      if (!user || !profile) {
+    if (!isAdminLoading) {
+      if (!adminUser || !adminProfile) {
         if (pathname !== '/admin/login') {
           router.push('/admin/login');
         }
-      } else if (profile.role !== 'admin') {
+      } else if (adminProfile.role !== 'admin') {
         if (pathname !== '/admin/login') {
           router.push('/admin/login');
         }
-      } else if (profile.role === 'admin' && pathname === '/admin/login') {
+      } else if (adminProfile.role === 'admin' && pathname === '/admin/login') {
         // Admin is on login page, redirect to dashboard
         router.push('/admin/dashboard');
       }
     }
-  }, [isLoading, user, profile, pathname, router]);
+  }, [isAdminLoading, adminUser, adminProfile, pathname, router]);
 
   useEffect(() => {
     const getSession = async () => {
       // Always set loading when checking session
-      setLoading(true);
+      setAdminLoading(true);
       
       try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
           console.error('Session error:', sessionError);
-          setLoading(false);
+          setAdminLoading(false);
           return;
         }
       
         if (session?.user) {
-          setUser(session.user);
+          setAdminUser(session.user);
+          // Keep loading true until profile is fetched
         
           // Fetch user profile to check if admin with retry logic
           let userProfile = null;
@@ -87,15 +88,17 @@ export default function AdminLayout({
           }
           
           if (userProfile) {
-            setProfile(userProfile);
-          
-            // Profile loaded successfully, let the main useEffect handle redirects
+            setAdminProfile(userProfile);
+            // Profile loaded successfully, loading will be set to false by setAdminProfile
+          } else {
+            // Failed to fetch profile after retries
+            setAdminLoading(false);
           }
         } else {
           // No session, clear state and redirect to login
-          setUser(null);
-          setProfile(null);
-          setLoading(false);
+          setAdminUser(null);
+          setAdminProfile(null);
+          setAdminLoading(false);
           if (pathname !== '/admin/login') {
             router.push('/admin/login');
           }
@@ -106,7 +109,7 @@ export default function AdminLayout({
           router.push('/admin/login');
         }
       } finally {
-        setLoading(false);
+        setAdminLoading(false);
       }
     };
 
@@ -117,7 +120,7 @@ export default function AdminLayout({
         console.log('Auth state change:', event, session?.user?.id);
         
         if (session?.user) {
-          setUser(session.user);
+          setAdminUser(session.user);
           
           // Fetch profile for new session with retry
           let userProfile = null;
@@ -145,13 +148,16 @@ export default function AdminLayout({
           }
           
           if (userProfile) {
-            setProfile(userProfile);
+            setAdminProfile(userProfile);
+          } else {
+            // Failed to fetch profile, set loading to false
+            setAdminLoading(false);
           }
         } else {
           // Handle logout - clear state completely
-          setUser(null);
-          setProfile(null);
-          setLoading(false);
+          setAdminUser(null);
+          setAdminProfile(null);
+          setAdminLoading(false);
           if (pathname !== '/admin/login') {
             router.push('/admin/login');
           }
@@ -160,9 +166,9 @@ export default function AdminLayout({
     );
 
     return () => subscription.unsubscribe();
-  }, [setUser, setProfile, setLoading, router, pathname]);
+  }, [setAdminUser, setAdminProfile, setAdminLoading, router, pathname]);
 
-  if (isLoading) {
+  if (isAdminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -176,9 +182,9 @@ export default function AdminLayout({
   }
 
   // Protect admin routes - only redirect if we're sure user is not admin
-  if (!user || !profile) {
+  if (!adminUser || !adminProfile) {
     // Still loading or no user/profile, show loading only if actually loading
-    if (isLoading) {
+    if (isAdminLoading) {
       return (
         <div className="min-h-screen flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin" />
@@ -193,7 +199,7 @@ export default function AdminLayout({
     );
   }
   
-  if (profile.role !== 'admin') {
+  if (adminProfile.role !== 'admin') {
     // Show loading (redirect handled in useEffect)
     return (
       <div className="min-h-screen flex items-center justify-center">

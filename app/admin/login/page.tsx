@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, supabase } from '@/lib/supabase';
-import { useAuthStore } from '@/store/auth';
+import { useAdminAuthStore } from '@/store/admin-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const { setUser, setProfile } = useAuthStore();
+  const { setAdminUser, setAdminProfile } = useAdminAuthStore();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,8 +34,8 @@ export default function AdminLoginPage() {
       }
 
       if (data.user) {
-        // First set the user
-        setUser(data.user);
+        // First set the admin user
+        setAdminUser(data.user);
         
         // Wait a bit for session to be established
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -71,21 +71,25 @@ export default function AdminLoginPage() {
         if (!profile) {
           setError('Gagal mengambil data profil. Silakan coba lagi.');
           await supabase.auth.signOut();
-          setUser(null);
+          setAdminUser(null);
           return;
         }
         
         // Check if user is admin
         if (profile.role === 'admin') {
-          setProfile(profile);
+          setAdminProfile(profile);
           toast.success('Login admin berhasil!');
           
-          // Let the layout handle the redirect to dashboard
+          // Wait a bit for state to update before redirect
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          // Redirect to admin dashboard
+          router.push('/admin/dashboard');
         } else {
           setError('Akses ditolak. Anda bukan admin.');
           await supabase.auth.signOut();
-          setUser(null);
-          setProfile(null);
+          setAdminUser(null);
+          setAdminProfile(null);
         }
       }
     } catch (err: any) {

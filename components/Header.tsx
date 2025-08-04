@@ -18,6 +18,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const router = useRouter();
   const wishlistItems = useWishlistStore((state) => state.items);
   const cartItems = useCartStore((state) => state.getTotalItems());
@@ -26,6 +27,23 @@ export default function Header() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isUserMenuOpen) {
+        const target = event.target as Element;
+        if (!target.closest('.user-menu-container')) {
+          setIsUserMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
 
   const handleLogout = async () => {
     await signOut();
@@ -143,8 +161,11 @@ export default function Header() {
               <div className="flex items-center gap-4">
                 {/* User Account */}
                 {isAuthenticated ? (
-                  <div className="relative group">
-                    <button className="flex items-center gap-2 p-2 hover:bg-accent rounded-lg transition-colors">
+                  <div className="relative user-menu-container">
+                    <button 
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="flex items-center gap-2 p-2 hover:bg-accent rounded-lg transition-colors"
+                    >
                       <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                         {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                       </div>
@@ -154,30 +175,37 @@ export default function Header() {
                     </button>
                     
                     {/* Dropdown Menu */}
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-background border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                      <div className="p-2">
-                        <Link
-                          href="/akun"
-                          className="block px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
-                        >
-                          Akun Saya
-                        </Link>
-                        <Link
-                          href="/akun/pesanan"
-                          className="block px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
-                        >
-                          Riwayat Pesanan
-                        </Link>
-                        <hr className="my-2" />
-                        <button
-                          type="button"
-                          onClick={handleLogout}
-                          className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                        >
-                          Keluar
-                        </button>
+                    {isUserMenuOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-background border rounded-lg shadow-lg z-50">
+                        <div className="p-2">
+                          <Link
+                            href="/akun"
+                            className="block px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            Akun Saya
+                          </Link>
+                          <Link
+                            href="/akun/pesanan"
+                            className="block px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            Riwayat Pesanan
+                          </Link>
+                          <hr className="my-2" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsUserMenuOpen(false);
+                              handleLogout();
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                          >
+                            Keluar
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ) : (
                   <Link

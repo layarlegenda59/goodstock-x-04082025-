@@ -2,6 +2,10 @@ import { supabase } from '@/lib/supabase';
 import ProductPageClient from './ProductPageClient';
 import { notFound } from 'next/navigation';
 
+// Force dynamic rendering to prevent caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface ProductPageProps {
   params: { id: string };
 }
@@ -26,7 +30,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     name: product.name,
     description: product.description || '',
     price: product.price,
-    originalPrice: product.discount ? product.price / (1 - product.discount / 100) : product.price,
+    originalPrice: product.originalPrice || undefined,
     discount: product.discount || undefined,
     image: product.images?.[0] || '/placeholder-image.svg',
     category: (product.category as 'sepatu' | 'tas' | 'pakaian') || 'sepatu',

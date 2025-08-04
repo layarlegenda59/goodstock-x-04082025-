@@ -35,8 +35,8 @@ export const useAuthStore = create<AuthStore>()(
       
       setUser: (user) => set({ 
         user, 
-        isAuthenticated: !!user,
-        isLoading: false
+        isAuthenticated: !!user
+        // Don't set isLoading to false here, let setProfile handle it
       }),
       
       setProfile: (profile) => set({ 

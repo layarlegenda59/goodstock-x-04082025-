@@ -43,6 +43,7 @@ interface Product {
   subcategory: string;
   brand: string;
   price: number;
+  originalPrice?: number;
   discount: number | null;
   stock: number;
   promo: boolean;

@@ -94,7 +94,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
           
           <div className="mb-3">
-            {product.originalPrice && (
+            {product.originalPrice && product.originalPrice > product.price && (
               <div className="text-xs text-muted-foreground line-through">
                 {formatPrice(product.originalPrice)}
               </div>

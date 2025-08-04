@@ -41,7 +41,8 @@ const productSchema = z.object({
   category: z.enum(['sepatu', 'tas', 'pakaian']),
   subcategory: z.string().min(1, 'Subcategory is required'),
   brand: z.string().min(1, 'Brand is required'),
-  price: z.number().min(0, 'Price must be positive'),
+  originalPrice: z.number().min(0, 'Original price must be positive'),
+  price: z.number().min(0, 'Final price must be positive'),
   discount: z.number().min(0).max(100).optional(),
   stock: z.number().min(0, 'Stock must be positive'),
   sizes: z.array(z.string()).min(1, 'At least one size is required'),
@@ -81,9 +82,19 @@ export default function EditProductPage({ params }: EditProductPageProps) {
   });
 
   const selectedCategory = form.watch('category');
+  const originalPrice = form.watch('originalPrice');
+  const discount = form.watch('discount');
   const availableSizes = selectedCategory === 'sepatu' ? shoeSizes : 
                         selectedCategory === 'pakaian' ? clothingSizes : 
                         ['One Size'];
+
+  // Auto-calculate discounted price
+  useEffect(() => {
+    if (originalPrice && discount !== undefined) {
+      const discountedPrice = originalPrice - (originalPrice * (discount / 100));
+      form.setValue('price', Math.round(discountedPrice));
+    }
+  }, [originalPrice, discount, form]);
 
   useEffect(() => {
     fetchProduct();
@@ -110,6 +121,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
           category: data.category,
           subcategory: data.subcategory,
           brand: data.brand,
+          originalPrice: data.originalPrice || data.price,
           price: data.price,
           discount: data.discount || 0,
           stock: data.stock,
@@ -143,6 +155,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
         category: data.category,
         subcategory: data.subcategory,
         brand: data.brand,
+        originalPrice: data.originalPrice,
         price: data.price,
         discount: data.discount,
         stock: data.stock,
@@ -366,13 +379,30 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                   <CardTitle>Pricing & Inventory</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="originalPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Origin Price (IDR)</FormLabel>
+                          <FormControl>
+                            <PriceInput 
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <FormField
                       control={form.control}
                       name="price"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Price (IDR)</FormLabel>
+                          <FormLabel>Price after Discount (IDR)</FormLabel>
                           <FormControl>
                             <PriceInput 
                               value={field.value}

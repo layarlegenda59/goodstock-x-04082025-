@@ -70,7 +70,7 @@ export default function BantuanPage() {
     {
       icon: Mail,
       title: 'Email',
-      description: 'support@goodstock.com',
+      description: 'admin@goodstock-x.com',
       action: 'Kirim Email',
       available: 'Respon dalam 24 jam'
     }
