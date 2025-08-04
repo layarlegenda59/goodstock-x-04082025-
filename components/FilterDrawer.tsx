@@ -6,12 +6,12 @@ import { brands, categories, shoeSizes, clothingSizes } from '@/lib/mockData';
 
 
 // Debug: Check if data is properly loaded
-console.log('Filter data loaded:', { 
-  brands: brands?.length, 
-  categories: Object.keys(categories || {}).length,
-  shoeSizes: shoeSizes?.length,
-  clothingSizes: clothingSizes?.length
-});
+// console.log('Filter data loaded:', { 
+//   brands: brands?.length, 
+//   categories: Object.keys(categories || {}).length,
+//   shoeSizes: shoeSizes?.length,
+//   clothingSizes: clothingSizes?.length
+// });
 interface FilterState {
   categories: string[];
   sizes: string[];
@@ -42,13 +42,13 @@ export default function FilterDrawer({
   // Browser compatibility check
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      console.log('Browser info:', {
-        userAgent: navigator.userAgent,
-        supports: {
-          flexbox: CSS.supports('display', 'flex'),
-          grid: CSS.supports('display', 'grid'),
-        }
-      });
+      // console.log('Browser info:', {
+      //   userAgent: navigator.userAgent,
+      //   supports: {
+      //     flexbox: CSS.supports('display', 'flex'),
+      //     grid: CSS.supports('display', 'grid'),
+      //   }
+      // });
     }
   }, []);
   useEffect(() => {
@@ -105,7 +105,8 @@ export default function FilterDrawer({
       <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-background border-l md:static md:border-l-0 md:border md:rounded-lg md:max-w-none">
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
-        ${isOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
+            <Filter className="w-5 h-5" />
+            <h2 className="font-medium">Filter</h2>
           </div>
           <button
             onClick={onClose}
@@ -233,7 +234,7 @@ export default function FilterDrawer({
                 className="w-full"
               />
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Rp 0</span>
+                <span>Gratis</span>
                 <span>Rp {localFilters.priceRange[1].toLocaleString('id-ID')}</span>
               </div>
             </div>

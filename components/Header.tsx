@@ -89,7 +89,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <header className="sticky top-0 z-[70] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         {/* Desktop Header */}
         <div className="hidden md:block">
           <div className="container mx-auto px-4 py-4">
@@ -119,7 +119,7 @@ export default function Header() {
                 
                 {/* Search Suggestions */}
                 {showSearchSuggestions && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-[60]">
                     <div className="p-4">
                       <div className="text-responsive-xs font-medium text-muted-foreground mb-2">Pencarian Populer</div>
                       <div className="space-y-1">
@@ -193,7 +193,7 @@ export default function Header() {
                 ) : (
                   <Link
                     href="/auth/login"
-                    className="p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                    className="p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
                     title="Masuk / Daftar"
                   >
                     <User className="icon-responsive" />
@@ -202,7 +202,7 @@ export default function Header() {
 
                 <Link
                   href="/cart"
-                  className="relative p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                  className="relative p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
                 >
                   <ShoppingCart className="icon-responsive" />
                   {cartItems > 0 && (
@@ -213,7 +213,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/wishlist"
-                  className="relative p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                  className="relative p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
                 >
                   <Heart className="icon-responsive" />
                   {wishlistItems.length > 0 && (
@@ -224,7 +224,7 @@ export default function Header() {
                 </Link>
                 <button
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  className="p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                  className="p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
                 >
                   {theme === 'dark' ? <Sun className="icon-responsive" /> : <Moon className="icon-responsive" />}
                 </button>
@@ -269,9 +269,9 @@ export default function Header() {
           <div className="flex items-center justify-between px-3 py-3 sm:px-4 sm:py-4">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 hover:bg-accent rounded-lg transition-colors flex-shrink-0 touch-target"
+              className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors flex-shrink-0 touch-target"
             >
-              {isMenuOpen ? <X className="icon-responsive" /> : <Menu className="icon-responsive" />}
+              {isMenuOpen ? <X className="icon-responsive-sm" /> : <Menu className="icon-responsive-sm" />}
             </button>
 
             <Link href="/" className="flex-1 flex justify-center">
@@ -285,8 +285,8 @@ export default function Header() {
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {/* Mobile User Menu */}
               {isAuthenticated ? (
-                <div className="flex items-center">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
+                <div className="p-1.5 sm:p-2 flex items-center justify-center">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
                     {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                   </div>
                 </div>

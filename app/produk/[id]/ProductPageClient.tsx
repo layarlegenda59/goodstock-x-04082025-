@@ -46,12 +46,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       setTimeout(() => {
         const img = new window.Image();
         img.onload = () => {
-          console.log(`Image retry successful for index ${index}`);
+          // console.log(`Image retry successful for index ${index}`);
           // Reset error state if retry succeeds
           setImageErrors(prev => ({ ...prev, [index]: false }));
         };
         img.onerror = () => {
-          console.error(`Image retry failed for index ${index}`);
+          // console.error(`Image retry failed for index ${index}`);
           setImageErrors(prev => ({ ...prev, [index]: true }));
         };
         img.src = productImages[index];
@@ -192,7 +192,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               fill
               className="object-cover"
               onError={() => handleImageError(currentImageIndex)}
-              onLoadingComplete={() => console.log('Image loaded successfully:', productImages[currentImageIndex])}
+              onLoadingComplete={() => {/* console.log('Image loaded successfully:', productImages[currentImageIndex]) */}}
               unoptimized={productImages[currentImageIndex]?.includes('supabase.co/storage')}
               priority={currentImageIndex === 0}
             />

@@ -22,8 +22,8 @@ export default function BottomNav() {
   const navItems = [
     { href: '/', icon: Home, label: 'Beranda' },
     { href: '/kategori', icon: Grid3X3, label: 'Kategori' },
-    { href: '/cart', icon: ShoppingCart, label: 'Keranjang', badge: isHydrated ? cartItems : 0 },
-    { href: '/wishlist', icon: Heart, label: 'Wishlist', badge: isHydrated ? wishlistItems.length : 0 },
+    { href: '/cart', icon: ShoppingCart, label: 'Keranjang', badge: isHydrated && cartItems > 0 ? cartItems : undefined },
+    { href: '/wishlist', icon: Heart, label: 'Wishlist', badge: isHydrated && wishlistItems.length > 0 ? wishlistItems.length : undefined },
     { href: '/akun', icon: User, label: 'Akun' },
   ];
 

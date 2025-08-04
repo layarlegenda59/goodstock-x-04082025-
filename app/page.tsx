@@ -31,7 +31,7 @@ export default function HomePage() {
         name: product.name,
         brand: product.brand,
         price: product.price,
-        originalPrice: product.discount ? product.price / (1 - product.discount / 100) : product.price,
+        originalPrice: product.discount && product.discount > 0 ? product.price / (1 - product.discount / 100) : product.price,
         discount: product.discount || undefined,
         image: product.images?.[0] || '/placeholder-image.svg',
         category: product.category as 'sepatu' | 'tas' | 'pakaian',
