@@ -109,7 +109,7 @@ export default function Header() {
                             className="flex items-center gap-3 w-full text-left hover:bg-accent p-2 rounded-md transition-colors"
                           >
                             <Search className="w-4 h-4 text-muted-foreground" />
-                            <span>Cari "<strong>{searchQuery}</strong>"</span>
+                            <span>Cari &quot;<strong>{searchQuery}</strong>&quot;</span>
                           </button>
                         </div>
                       )}

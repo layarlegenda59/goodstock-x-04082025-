@@ -36,7 +36,7 @@ export function PriceInput({ value, onChange, placeholder = "", className, disab
   // Initialize display value
   useEffect(() => {
     setDisplayValue(formatNumber(value));
-  }, []);
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;

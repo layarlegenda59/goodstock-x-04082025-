@@ -17,18 +17,23 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
 
-  // Handle redirects in separate useEffect to avoid render warnings
+  // Single useEffect to handle all redirects
   useEffect(() => {
-    if (!isLoading && !user && !profile && pathname !== '/admin/login') {
-      router.push('/admin/login');
+    if (!isLoading) {
+      if (!user || !profile) {
+        if (pathname !== '/admin/login') {
+          router.push('/admin/login');
+        }
+      } else if (profile.role !== 'admin') {
+        if (pathname !== '/admin/login') {
+          router.push('/admin/login');
+        }
+      } else if (profile.role === 'admin' && pathname === '/admin/login') {
+        // Admin is on login page, redirect to dashboard
+        router.push('/admin/dashboard');
+      }
     }
   }, [isLoading, user, profile, pathname, router]);
-
-  useEffect(() => {
-    if (profile && profile.role !== 'admin' && pathname !== '/admin/login') {
-      router.push('/admin/login');
-    }
-  }, [profile, router, pathname]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -84,20 +89,7 @@ export default function AdminLayout({
           if (userProfile) {
             setProfile(userProfile);
           
-            // Check if user is admin and handle redirects
-            if (userProfile.role === 'admin') {
-              // User is admin, redirect from login page to dashboard
-              if (pathname === '/admin/login') {
-                // On login page but already authenticated as admin, go to dashboard
-                router.push('/admin/dashboard');
-              }
-              // If already on admin page, allow access (no action needed)
-            } else {
-              // Not admin, redirect to login
-              if (pathname !== '/admin/login') {
-                router.push('/admin/login');
-              }
-            }
+            // Profile loaded successfully, let the main useEffect handle redirects
           }
         } else {
           // No session, clear state and redirect to login
@@ -154,10 +146,6 @@ export default function AdminLayout({
           
           if (userProfile) {
             setProfile(userProfile);
-            
-            if (userProfile.role === 'admin' && pathname === '/admin/login') {
-              router.push('/admin/dashboard');
-            }
           }
         } else {
           // Handle logout - clear state completely

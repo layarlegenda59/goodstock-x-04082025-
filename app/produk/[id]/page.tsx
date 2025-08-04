@@ -27,18 +27,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
     description: product.description || '',
     price: product.price,
     originalPrice: product.discount ? product.price / (1 - product.discount / 100) : product.price,
-    discount: product.discount || 0,
+    discount: product.discount || undefined,
     image: product.images?.[0] || '/placeholder-image.svg',
-    images: product.images || ['/placeholder-image.svg'],
-    category: product.category,
-    subcategory: product.subcategory,
-    brand: product.brand,
+    category: (product.category as 'sepatu' | 'tas' | 'pakaian') || 'sepatu',
+    subcategory: product.subcategory || '',
+    brand: product.brand || '',
     sizes: product.sizes || [],
-    colors: ['Default'], // Add default color since it's not in the database
-    stock: product.stock,
-    rating: 4.5, // Default rating
-    reviews: 0, // Default reviews
-    gender: product.gender
+    colors: product.colors || ['Default'],
+    gender: (product.gender as 'pria' | 'wanita' | 'unisex') || 'unisex'
   };
 
   return <ProductPageClient product={transformedProduct} />;

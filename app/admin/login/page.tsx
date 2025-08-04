@@ -80,8 +80,7 @@ export default function AdminLoginPage() {
           setProfile(profile);
           toast.success('Login admin berhasil!');
           
-          // Redirect to admin dashboard after successful login
-          router.push('/admin/dashboard');
+          // Let the layout handle the redirect to dashboard
         } else {
           setError('Akses ditolak. Anda bukan admin.');
           await supabase.auth.signOut();

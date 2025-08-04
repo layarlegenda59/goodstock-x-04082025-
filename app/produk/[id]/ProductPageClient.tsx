@@ -130,18 +130,14 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           description: p.description || '',
           price: p.price,
           originalPrice: p.discount ? p.price / (1 - p.discount / 100) : p.price,
-          discount: p.discount || 0,
+          discount: p.discount || undefined,
           image: p.images?.[0] || '/placeholder-image.svg',
-          images: p.images || ['/placeholder-image.svg'],
-          category: p.category,
-          subcategory: p.subcategory,
-          brand: p.brand,
+          category: (p.category as 'sepatu' | 'tas' | 'pakaian') || 'sepatu',
+          subcategory: p.subcategory || '',
+          brand: p.brand || '',
           sizes: p.sizes || [],
-          colors: ['Default'],
-          stock: p.stock,
-          rating: 4.5,
-          reviews: 0,
-          gender: p.gender
+          colors: p.colors || ['Default'],
+          gender: (p.gender as 'pria' | 'wanita' | 'unisex') || 'unisex'
         }));
         setRelatedProducts(transformedProducts);
       }
