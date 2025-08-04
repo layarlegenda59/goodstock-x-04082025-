@@ -55,28 +55,28 @@ export default function AdminSidebar() {
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between p-responsive border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">
               <img 
                 src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
                 alt="Goodstock-X"
                 className="h-6 w-auto"
               />
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Admin</span>
+              <span className="text-responsive-sm font-medium text-gray-600 dark:text-gray-400">Admin</span>
             </div>
           </div>
 
           {/* Admin Info */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="p-responsive border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
+              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-responsive-sm font-medium">
                 {adminProfile?.full_name?.charAt(0) || adminProfile?.email?.charAt(0) || 'A'}
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                <div className="text-responsive-sm font-medium text-gray-900 dark:text-white">
                   {adminProfile?.full_name || 'Admin'}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
+                <div className="text-responsive-xs text-gray-500 dark:text-gray-400">
                   Administrator
                 </div>
               </div>
@@ -84,7 +84,7 @@ export default function AdminSidebar() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-responsive space-y-2">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -94,7 +94,7 @@ export default function AdminSidebar() {
                   key={item.name}
                   href={item.href}
                   className={`
-                    flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                    flex items-center gap-3 px-3 py-2 rounded-lg transition-colors touch-target
                     ${isActive 
                       ? 'bg-primary text-primary-foreground' 
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -102,22 +102,22 @@ export default function AdminSidebar() {
                   `}
                   onClick={() => setSidebarOpen(false)}
                 >
-                  <Icon className="h-5 w-5 flex-shrink-0" />
-                  <span className="font-medium">{item.name}</span>
+                  <Icon className="icon-responsive flex-shrink-0" />
+                  <span className="text-responsive-sm font-medium">{item.name}</span>
                 </Link>
               );
             })}
           </nav>
 
           {/* Logout */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="p-responsive border-t border-gray-200 dark:border-gray-700">
             <Button
               variant="ghost"
               onClick={handleLogout}
-              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 touch-target"
             >
-              <LogOut className="h-5 w-5 flex-shrink-0" />
-              <span className="ml-3">Logout</span>
+              <LogOut className="icon-responsive flex-shrink-0" />
+              <span className="ml-3 text-responsive-sm">Logout</span>
             </Button>
           </div>
         </div>
@@ -128,9 +128,9 @@ export default function AdminSidebar() {
         variant="ghost"
         size="sm"
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-white dark:bg-gray-800 border shadow-md"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white dark:bg-gray-800 border shadow-md touch-target"
       >
-        {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        {sidebarOpen ? <X className="icon-responsive-sm" /> : <Menu className="icon-responsive-sm" />}
       </Button>
     </>
   );

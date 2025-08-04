@@ -168,21 +168,22 @@ export default function ProductsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white">
           Products Management
         </h1>
-        <Button asChild>
+        <Button asChild className="btn-responsive">
           <Link href="/admin/products/add">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Product
+            <Plus className="icon-responsive-sm mr-2" />
+            <span className="hidden sm:inline">Add Product</span>
+            <span className="sm:hidden">Add</span>
           </Link>
         </Button>
       </div>
 
-      <Card>
+      <Card className="card-responsive">
         <CardHeader>
-          <CardTitle>Product Catalog</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-responsive-lg">Product Catalog</CardTitle>
+          <CardDescription className="text-responsive-sm">
             Manage your product inventory and pricing
           </CardDescription>
         </CardHeader>
@@ -190,54 +191,54 @@ export default function ProductsPage() {
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 icon-responsive-sm" />
               <Input
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-responsive-sm"
               />
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-48 text-responsive-sm">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="sepatu">Sepatu</SelectItem>
-                <SelectItem value="tas">Tas</SelectItem>
-                <SelectItem value="pakaian">Pakaian</SelectItem>
+                <SelectItem value="all" className="text-responsive-sm">All Categories</SelectItem>
+                <SelectItem value="sepatu" className="text-responsive-sm">Sepatu</SelectItem>
+                <SelectItem value="tas" className="text-responsive-sm">Tas</SelectItem>
+                <SelectItem value="pakaian" className="text-responsive-sm">Pakaian</SelectItem>
               </SelectContent>
             </Select>
             <Select value={promoFilter} onValueChange={setPromoFilter}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-48 text-responsive-sm">
                 <SelectValue placeholder="Promo Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Products</SelectItem>
-                <SelectItem value="promo">Promo Only</SelectItem>
-                <SelectItem value="regular">Regular Only</SelectItem>
+                <SelectItem value="all" className="text-responsive-sm">All Products</SelectItem>
+                <SelectItem value="promo" className="text-responsive-sm">Promo Only</SelectItem>
+                <SelectItem value="regular" className="text-responsive-sm">Regular Only</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Products Table */}
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-responsive-sm">Product</TableHead>
+                  <TableHead className="text-responsive-sm hidden md:table-cell">Category</TableHead>
+                  <TableHead className="text-responsive-sm">Price</TableHead>
+                  <TableHead className="text-responsive-sm hidden sm:table-cell">Stock</TableHead>
+                  <TableHead className="text-responsive-sm hidden lg:table-cell">Status</TableHead>
+                  <TableHead className="text-right text-responsive-sm">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredProducts.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground text-responsive-sm">
                       No products found
                     </TableCell>
                   </TableRow>
@@ -250,39 +251,40 @@ export default function ProductsPage() {
                             <img
                               src={product.images[0]}
                               alt={product.name}
-                              className="w-10 h-10 object-cover rounded-lg"
+                              className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-lg flex-shrink-0"
                             />
                           )}
-                          <div>
-                            <div className="font-medium">{product.name}</div>
-                            <div className="text-sm text-muted-foreground">{product.brand}</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-responsive-sm font-medium truncate">{product.name}</div>
+                            <div className="text-responsive-xs text-muted-foreground truncate">{product.brand}</div>
+                            <div className="md:hidden text-responsive-xs text-muted-foreground capitalize">{product.category}</div>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         <div>
-                          <div className="capitalize">{product.category}</div>
-                          <div className="text-sm text-muted-foreground">{product.subcategory}</div>
+                          <div className="text-responsive-sm capitalize">{product.category}</div>
+                          <div className="text-responsive-xs text-muted-foreground">{product.subcategory}</div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div>
-                          <div className="font-medium">Rp {product.price.toLocaleString('id-ID')}</div>
+                          <div className="text-responsive-sm font-medium">Rp {product.price.toLocaleString('id-ID')}</div>
                           {product.discount != null && product.discount > 0 && (
-                            <div className="text-sm text-red-600">{product.discount}% off</div>
+                            <div className="text-responsive-xs text-red-600">{product.discount}% off</div>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant={product.stock > 0 ? "default" : "destructive"}>
+                      <TableCell className="hidden sm:table-cell">
+                        <Badge variant={product.stock > 0 ? "default" : "destructive"} className="text-responsive-xs">
                           {product.stock} units
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden lg:table-cell">
                         <div className="flex gap-2">
                           <Badge 
                             variant={product.promo ? "default" : "secondary"}
-                            className="cursor-pointer"
+                            className="cursor-pointer text-responsive-xs touch-target"
                             onClick={() => togglePromo(product.id, product.promo)}
                           >
                             {product.promo ? 'Promo' : 'Regular'}
@@ -290,35 +292,35 @@ export default function ProductsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="sm" asChild>
+                        <div className="flex items-center justify-end gap-1">
+                          <Button variant="ghost" size="sm" asChild className="touch-target">
                             <Link href={`/produk/${product.id}`}>
-                              <Eye className="h-4 w-4" />
+                              <Eye className="icon-responsive-sm" />
                             </Link>
                           </Button>
-                          <Button variant="ghost" size="sm" asChild>
+                          <Button variant="ghost" size="sm" asChild className="touch-target">
                             <Link href={`/admin/products/edit/${product.id}`}>
-                              <Edit className="h-4 w-4" />
+                              <Edit className="icon-responsive-sm" />
                             </Link>
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <Trash2 className="h-4 w-4 text-red-600" />
+                              <Button variant="ghost" size="sm" className="touch-target">
+                                <Trash2 className="icon-responsive-sm text-red-600" />
                               </Button>
                             </AlertDialogTrigger>
-                            <AlertDialogContent>
+                            <AlertDialogContent className="mx-4">
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Product</AlertDialogTitle>
-                                <AlertDialogDescription>
+                                <AlertDialogTitle className="text-responsive-lg">Delete Product</AlertDialogTitle>
+                                <AlertDialogDescription className="text-responsive-sm">
                                   Are you sure you want to delete "{product.name}"? This action cannot be undone.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel className="btn-responsive-sm">Cancel</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => handleDeleteProduct(product.id)}
-                                  className="bg-red-600 hover:bg-red-700"
+                                  className="bg-red-600 hover:bg-red-700 btn-responsive-sm"
                                 >
                                   Delete
                                 </AlertDialogAction>

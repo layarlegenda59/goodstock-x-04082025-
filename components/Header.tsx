@@ -106,14 +106,14 @@ export default function Header() {
               {/* Search Bar */}
               <div className="flex-1 max-w-2xl relative">
                 <form onSubmit={handleSearch} className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground icon-responsive" />
                   <input
                     type="text"
                     placeholder="Cari produk, brand, atau kategori..."
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                     onKeyDown={handleSearchKeyDown}
-                    className="w-full pl-12 pr-4 py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full pl-12 pr-4 py-2.5 sm:py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all text-responsive-sm"
                   />
                 </form>
                 
@@ -121,7 +121,7 @@ export default function Header() {
                 {showSearchSuggestions && (
                   <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50">
                     <div className="p-4">
-                      <div className="text-sm font-medium text-muted-foreground mb-2">Pencarian Populer</div>
+                      <div className="text-responsive-xs font-medium text-muted-foreground mb-2">Pencarian Populer</div>
                       <div className="space-y-1">
                         {popularSearches.map((search) => (
                           <button
@@ -131,7 +131,7 @@ export default function Header() {
                               router.push(`/search?q=${encodeURIComponent(search)}`);
                               setShowSearchSuggestions(false);
                             }}
-                            className="block w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
+                            className="block w-full text-left px-3 py-2 text-responsive-xs hover:bg-accent rounded-md transition-colors touch-target"
                           >
                             {search}
                           </button>
@@ -154,19 +154,19 @@ export default function Header() {
                       <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                         {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                       </div>
-                      <span className="text-sm font-medium">{profile?.full_name || 'User'}</span>
+                      <span className="text-responsive-xs font-medium">{profile?.full_name || 'User'}</span>
                     </button>
                     
                     {isUserMenuOpen && (
                       <div className="absolute right-0 top-full mt-2 w-64 bg-background border rounded-lg shadow-lg z-50">
                         <div className="p-4 border-b">
-                          <div className="font-medium">{profile?.full_name || 'User'}</div>
-                          <div className="text-sm text-muted-foreground">{profile?.email}</div>
+                          <div className="font-medium text-responsive-sm">{profile?.full_name || 'User'}</div>
+                          <div className="text-responsive-xs text-muted-foreground">{profile?.email}</div>
                         </div>
                         <div className="p-2">
                           <Link
                             href="/akun"
-                            className="block px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
+                            className="block px-3 py-2 text-responsive-xs hover:bg-accent rounded-md transition-colors touch-target"
                             onClick={() => setIsUserMenuOpen(false)}
                           >
                             Akun Saya
@@ -182,7 +182,7 @@ export default function Header() {
                             onClick={() => {
                               handleLogout();
                             }}
-                            className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                            className="w-full text-left px-3 py-2 text-responsive-xs text-red-600 hover:bg-red-50 rounded-md transition-colors touch-target"
                           >
                             Keluar
                           </button>
@@ -193,18 +193,18 @@ export default function Header() {
                 ) : (
                   <Link
                     href="/auth/login"
-                    className="p-2 hover:bg-accent rounded-lg transition-colors"
+                    className="p-2 hover:bg-accent rounded-lg transition-colors touch-target"
                     title="Masuk / Daftar"
                   >
-                    <User className="w-5 h-5" />
+                    <User className="icon-responsive" />
                   </Link>
                 )}
 
                 <Link
                   href="/cart"
-                  className="relative p-2 hover:bg-accent rounded-lg transition-colors"
+                  className="relative p-2 hover:bg-accent rounded-lg transition-colors touch-target"
                 >
-                  <ShoppingCart className="w-5 h-5" />
+                  <ShoppingCart className="icon-responsive" />
                   {cartItems > 0 && (
                     <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                       {cartItems}
@@ -213,9 +213,9 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/wishlist"
-                  className="relative p-2 hover:bg-accent rounded-lg transition-colors"
+                  className="relative p-2 hover:bg-accent rounded-lg transition-colors touch-target"
                 >
-                  <Heart className="w-5 h-5" />
+                  <Heart className="icon-responsive" />
                   {wishlistItems.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                       {wishlistItems.length}
@@ -224,9 +224,9 @@ export default function Header() {
                 </Link>
                 <button
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  className="p-2 hover:bg-accent rounded-lg transition-colors"
+                  className="p-2 hover:bg-accent rounded-lg transition-colors touch-target"
                 >
-                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  {theme === 'dark' ? <Sun className="icon-responsive" /> : <Moon className="icon-responsive" />}
                 </button>
               </div>
             </div>
@@ -234,13 +234,13 @@ export default function Header() {
 
           {/* Navigation Menu */}
           <nav className="border-t bg-muted/20">
-            <div className="container mx-auto px-4">
-              <div className="flex items-center justify-center gap-8 py-3">
+            <div className="container mx-auto container-responsive">
+              <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 py-2 sm:py-3">
                 {Object.entries(categories).map(([key, category]) => (
                   <div key={key} className="group relative">
                     <Link
                       href={`/kategori/${key}`}
-                      className="text-sm font-medium hover:text-primary transition-colors py-2"
+                      className="text-responsive-xs font-medium hover:text-primary transition-colors py-2 touch-target"
                     >
                       {category.name}
                     </Link>
@@ -250,7 +250,7 @@ export default function Header() {
                           <Link
                             key={sub}
                             href={`/kategori/${key}?subcategory=${encodeURIComponent(sub)}`}
-                            className="block px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
+                            className="block px-3 py-2 text-responsive-xs hover:bg-accent rounded-md transition-colors touch-target"
                           >
                             {sub}
                           </Link>
@@ -269,9 +269,9 @@ export default function Header() {
           <div className="flex items-center justify-between px-3 py-3 sm:px-4 sm:py-4">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 hover:bg-accent rounded-lg transition-colors flex-shrink-0"
+              className="p-2 hover:bg-accent rounded-lg transition-colors flex-shrink-0 touch-target"
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMenuOpen ? <X className="icon-responsive" /> : <Menu className="icon-responsive" />}
             </button>
 
             <Link href="/" className="flex-1 flex justify-center">
@@ -293,18 +293,18 @@ export default function Header() {
               ) : (
                 <Link
                   href="/auth/login"
-                  className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors"
+                  className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
                   title="Masuk / Daftar"
                 >
-                  <User className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <User className="icon-responsive-sm" />
                 </Link>
               )}
 
               <Link
                 href="/cart"
-                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors"
+                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
               >
-                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ShoppingCart className="icon-responsive-sm" />
                 {cartItems > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {cartItems}
@@ -313,9 +313,9 @@ export default function Header() {
               </Link>
               <Link
                 href="/wishlist"
-                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors"
+                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
               >
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Heart className="icon-responsive-sm" />
                 {wishlistItems.length > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {wishlistItems.length}
@@ -324,9 +324,9 @@ export default function Header() {
               </Link>
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
               >
-                {theme === 'dark' ? <Sun className="w-4 h-4 sm:w-5 sm:h-5" /> : <Moon className="w-4 h-4 sm:w-5 sm:h-5" />}
+                {theme === 'dark' ? <Sun className="icon-responsive-sm" /> : <Moon className="icon-responsive-sm" />}
               </button>
             </div>
           </div>
@@ -334,14 +334,14 @@ export default function Header() {
           {/* Mobile Search */}
           <div className="px-3 pb-3 sm:px-4 sm:pb-4">
             <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground icon-responsive-sm" />
               <input
                 type="text"
                 placeholder="Cari produk, brand, atau kategori..."
                 value={searchQuery}
                 onChange={handleSearchInputChange}
                 onKeyDown={handleSearchKeyDown}
-                className="w-full pl-10 pr-4 py-2.5 sm:py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all text-responsive-sm"
               />
             </form>
           </div>
@@ -350,30 +350,30 @@ export default function Header() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t bg-background max-h-[calc(100vh-120px)] overflow-y-auto">
-            <div className="p-3 space-y-3">
+            <div className="p-responsive space-y-3">
               {/* Mobile Auth Section */}
               {isAuthenticated ? (
                 <div className="border-b pb-3 mb-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
+                    <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-responsive-xs font-medium">
                       {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                     </div>
                     <div>
-                      <div className="text-sm font-medium">{profile?.full_name || 'User'}</div>
-                      <div className="text-xs text-muted-foreground">{profile?.email}</div>
+                      <div className="text-responsive-sm font-medium">{profile?.full_name || 'User'}</div>
+                      <div className="text-responsive-xs text-muted-foreground">{profile?.email}</div>
                     </div>
                   </div>
                   <div className="space-y-1">
                     <Link
                       href="/akun"
-                      className="block text-xs hover:text-primary transition-colors py-1"
+                      className="block text-responsive-xs hover:text-primary transition-colors py-2 touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Akun Saya
                     </Link>
                     <Link
                       href="/akun/pesanan"
-                      className="block text-xs hover:text-primary transition-colors py-1"
+                      className="block text-responsive-xs hover:text-primary transition-colors py-2 touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Riwayat Pesanan
@@ -383,7 +383,7 @@ export default function Header() {
                         handleLogout();
                         setIsMenuOpen(false);
                       }}
-                      className="block text-xs text-red-600 hover:text-red-700 transition-colors py-1"
+                      className="block text-responsive-xs text-red-600 hover:text-red-700 transition-colors py-2 touch-target"
                     >
                       Keluar
                     </button>
@@ -394,14 +394,14 @@ export default function Header() {
                   <div className="flex gap-2">
                     <Link
                       href="/auth/login"
-                      className="flex-1 text-center py-1.5 px-2 border rounded text-xs hover:bg-accent transition-colors"
+                      className="flex-1 text-center btn-responsive-sm border rounded hover:bg-accent transition-colors touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Masuk
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="flex-1 text-center py-1.5 px-2 bg-primary text-primary-foreground rounded text-xs hover:bg-primary/90 transition-colors"
+                      className="flex-1 text-center btn-responsive-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Daftar
@@ -414,17 +414,17 @@ export default function Header() {
                 <div key={key}>
                   <Link
                     href={`/kategori/${key}`}
-                    className="block text-sm font-medium py-1.5 hover:text-primary transition-colors"
+                    className="block text-responsive-sm font-medium py-2 hover:text-primary transition-colors touch-target"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {category.name}
                   </Link>
-                  <div className="ml-3 space-y-0.5">
+                  <div className="ml-3 space-y-1">
                     {category.subcategories.map((sub) => (
                       <Link
                         key={sub}
                         href={`/kategori/${key}?subcategory=${encodeURIComponent(sub)}`}
-                        className="block text-xs text-muted-foreground py-0.5 hover:text-foreground transition-colors"
+                        className="block text-responsive-xs text-muted-foreground py-1.5 hover:text-foreground transition-colors touch-target"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {sub}

@@ -188,18 +188,18 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild className="btn-responsive touch-target">
             <Link href="/admin/products">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="icon-responsive-sm mr-2" />
               Back to Products
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white">
             Edit Product
           </h1>
         </div>
-        <Card>
-          <CardContent className="p-6">
+        <Card className="card-responsive">
+          <CardContent className="p-responsive">
             <div className="animate-pulse space-y-4">
               <div className="h-4 bg-gray-200 rounded w-1/4"></div>
               <div className="h-10 bg-gray-200 rounded"></div>
@@ -216,19 +216,19 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild className="btn-responsive touch-target">
             <Link href="/admin/products">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="icon-responsive-sm mr-2" />
               Back to Products
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white">
             Product Not Found
           </h1>
         </div>
-        <Card>
-          <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">The product you're looking for doesn't exist.</p>
+        <Card className="card-responsive">
+          <CardContent className="p-responsive text-center">
+            <p className="text-muted-foreground text-responsive-sm">The product you're looking for doesn't exist.</p>
           </CardContent>
         </Card>
       </div>
@@ -242,11 +242,12 @@ export default function EditProductPage({ params }: EditProductPageProps) {
           variant="ghost" 
           size="sm" 
           onClick={() => router.push('/admin/products')}
+          className="btn-responsive touch-target"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="icon-responsive-sm mr-2" />
           Back to Products
         </Button>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white">
           Edit Product: {product.name}
         </h1>
       </div>
@@ -256,24 +257,24 @@ export default function EditProductPage({ params }: EditProductPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main Form */}
             <div className="lg:col-span-2 space-y-6">
-              <Card>
+              <Card className="card-responsive">
                 <CardHeader>
-                  <CardTitle>Product Information</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-responsive-lg">Product Information</CardTitle>
+                  <CardDescription className="text-responsive-sm">
                     Update product details
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 p-responsive">
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Product Name</FormLabel>
+                        <FormLabel className="text-responsive-sm">Product Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter product name" {...field} />
+                          <Input placeholder="Enter product name" {...field} className="text-responsive-sm touch-target" />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-responsive-xs" />
                       </FormItem>
                     )}
                   />
@@ -283,14 +284,15 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel className="text-responsive-sm">Description</FormLabel>
                         <FormControl>
                           <Textarea 
                             placeholder="Enter product description" 
                             {...field} 
+                            className="text-responsive-sm touch-target"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-responsive-xs" />
                       </FormItem>
                     )}
                   />
@@ -301,22 +303,22 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                       name="category"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Category</FormLabel>
+                          <FormLabel className="text-responsive-sm">Category</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="text-responsive-sm touch-target">
                                 <SelectValue placeholder="Select category" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {Object.entries(categories).map(([key, category]) => (
-                                <SelectItem key={key} value={key}>
+                                <SelectItem key={key} value={key} className="text-responsive-sm">
                                   {category.name}
                                 </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
-                          <FormMessage />
+                          <FormMessage className="text-responsive-xs" />
                         </FormItem>
                       )}
                     />
@@ -326,22 +328,22 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                       name="subcategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Subcategory</FormLabel>
+                          <FormLabel className="text-responsive-sm">Subcategory</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="text-responsive-sm touch-target">
                                 <SelectValue placeholder="Select subcategory" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {categories[selectedCategory]?.subcategories.map((sub) => (
-                                <SelectItem key={sub} value={sub}>
+                                <SelectItem key={sub} value={sub} className="text-responsive-sm">
                                   {sub}
                                 </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
-                          <FormMessage />
+                          <FormMessage className="text-responsive-xs" />
                         </FormItem>
                       )}
                     />
@@ -352,47 +354,48 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                     name="brand"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Brand</FormLabel>
+                        <FormLabel className="text-responsive-sm">Brand</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="text-responsive-sm touch-target">
                               <SelectValue placeholder="Select brand" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             {brands.map((brand) => (
-                              <SelectItem key={brand} value={brand}>
+                              <SelectItem key={brand} value={brand} className="text-responsive-sm">
                                 {brand}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-responsive-xs" />
                       </FormItem>
                     )}
                   />
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="card-responsive">
                 <CardHeader>
-                  <CardTitle>Pricing & Inventory</CardTitle>
+                  <CardTitle className="text-responsive-lg">Pricing & Inventory</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 p-responsive">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <FormField
                       control={form.control}
                       name="originalPrice"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Origin Price (IDR)</FormLabel>
+                          <FormLabel className="text-responsive-sm">Origin Price (IDR)</FormLabel>
                           <FormControl>
                             <PriceInput 
                               value={field.value}
                               onChange={field.onChange}
+                              className="text-responsive-sm touch-target"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-responsive-xs" />
                         </FormItem>
                       )}
                     />
@@ -402,14 +405,15 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                       name="price"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Price after Discount (IDR)</FormLabel>
+                          <FormLabel className="text-responsive-sm">Price after Discount (IDR)</FormLabel>
                           <FormControl>
                             <PriceInput 
                               value={field.value}
                               onChange={field.onChange}
+                              className="text-responsive-sm touch-target"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-responsive-xs" />
                         </FormItem>
                       )}
                     />
@@ -419,7 +423,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                       name="discount"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Discount (%)</FormLabel>
+                          <FormLabel className="text-responsive-sm">Discount (%)</FormLabel>
                           <FormControl>
                             <Input 
                               type="number" 
@@ -428,9 +432,10 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                               max="100"
                               {...field}
                               onChange={(e) => field.onChange(Number(e.target.value))}
+                              className="text-responsive-sm touch-target"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-responsive-xs" />
                         </FormItem>
                       )}
                     />
@@ -440,16 +445,17 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                       name="stock"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Stock Quantity</FormLabel>
+                          <FormLabel className="text-responsive-sm">Stock Quantity</FormLabel>
                           <FormControl>
                             <Input 
                               type="number" 
                               placeholder="" 
                               {...field}
                               onChange={(e) => field.onChange(Number(e.target.value))}
+                              className="text-responsive-sm touch-target"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-responsive-xs" />
                         </FormItem>
                       )}
                     />
@@ -457,17 +463,17 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="card-responsive">
                 <CardHeader>
-                  <CardTitle>Product Variants</CardTitle>
+                  <CardTitle className="text-responsive-lg">Product Variants</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 p-responsive">
                   <FormField
                     control={form.control}
                     name="sizes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Available Sizes</FormLabel>
+                        <FormLabel className="text-responsive-sm">Available Sizes</FormLabel>
                         <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
                           {availableSizes.map((size) => (
                             <div key={size} className="flex items-center space-x-2">
@@ -481,14 +487,15 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                                     field.onChange(field.value.filter((s) => s !== size));
                                   }
                                 }}
+                                className="touch-target"
                               />
-                              <Label htmlFor={size} className="text-sm">
+                              <Label htmlFor={size} className="text-responsive-xs">
                                 {size}
                               </Label>
                             </div>
                           ))}
                         </div>
-                        <FormMessage />
+                        <FormMessage className="text-responsive-xs" />
                       </FormItem>
                     )}
                   />
@@ -498,20 +505,20 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                     name="gender"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Gender</FormLabel>
+                        <FormLabel className="text-responsive-sm">Gender</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="text-responsive-sm touch-target">
                               <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="pria">Pria</SelectItem>
-                            <SelectItem value="wanita">Wanita</SelectItem>
-                            <SelectItem value="unisex">Unisex</SelectItem>
+                            <SelectItem value="pria" className="text-responsive-sm">Pria</SelectItem>
+                            <SelectItem value="wanita" className="text-responsive-sm">Wanita</SelectItem>
+                            <SelectItem value="unisex" className="text-responsive-sm">Unisex</SelectItem>
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-responsive-xs" />
                       </FormItem>
                     )}
                   />
@@ -521,14 +528,14 @@ export default function EditProductPage({ params }: EditProductPageProps) {
 
             {/* Sidebar */}
             <div className="space-y-6">
-              <Card>
+              <Card className="card-responsive">
                 <CardHeader>
-                  <CardTitle>Product Images</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-responsive-lg">Product Images</CardTitle>
+                  <CardDescription className="text-responsive-sm">
                     Update product images (max 5 images)
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-responsive">
                   <ImageUpload
                     images={images}
                     onImagesChange={setImages}
@@ -537,11 +544,11 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="card-responsive">
                 <CardHeader>
-                  <CardTitle>Promotion</CardTitle>
+                  <CardTitle className="text-responsive-lg">Promotion</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-responsive">
                   <FormField
                     control={form.control}
                     name="promo"
@@ -551,13 +558,14 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
+                            className="touch-target"
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>
+                          <FormLabel className="text-responsive-sm">
                             Enable Promo
                           </FormLabel>
-                          <FormDescription>
+                          <FormDescription className="text-responsive-xs">
                             Mark this product as promotional item
                           </FormDescription>
                         </div>
@@ -568,15 +576,15 @@ export default function EditProductPage({ params }: EditProductPageProps) {
               </Card>
 
               <div className="space-y-2">
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full btn-responsive touch-target" disabled={loading}>
                   {loading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="icon-responsive-sm mr-2 animate-spin" />
                       Updating Product...
                     </>
                   ) : (
                     <>
-                      <Save className="h-4 w-4 mr-2" />
+                      <Save className="icon-responsive-sm mr-2" />
                       Update Product
                     </>
                   )}
@@ -584,7 +592,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="w-full"
+                  className="w-full btn-responsive touch-target"
                   onClick={() => router.push('/admin/products')}
                 >
                   Cancel

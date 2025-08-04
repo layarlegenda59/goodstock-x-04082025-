@@ -88,55 +88,56 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white">
           Dashboard Admin
         </h1>
         <div className="flex gap-2">
-          <Button asChild>
+          <Button asChild className="btn-responsive">
             <Link href="/admin/products/add">
-              <Plus className="h-4 w-4 mr-2" />
-              Tambah Produk
+              <Plus className="icon-responsive-sm mr-2" />
+              <span className="hidden sm:inline">Tambah Produk</span>
+              <span className="sm:hidden">Tambah</span>
             </Link>
           </Button>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+      <div className="grid-responsive gap-6">
+        <Card className="card-responsive">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Produk</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-responsive-sm font-medium">Total Produk</CardTitle>
+            <Package className="icon-responsive-sm text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProducts}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-responsive-xl font-bold">{stats.totalProducts}</div>
+            <p className="text-responsive-xs text-muted-foreground">
               Produk aktif dalam katalog
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="card-responsive">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Produk Promo</CardTitle>
-            <Tag className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-responsive-sm font-medium">Produk Promo</CardTitle>
+            <Tag className="icon-responsive-sm text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.promoProducts}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-responsive-xl font-bold">{stats.promoProducts}</div>
+            <p className="text-responsive-xs text-muted-foreground">
               Produk dengan promo aktif
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="card-responsive">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tingkat Konversi</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-responsive-sm font-medium">Tingkat Konversi</CardTitle>
+            <TrendingUp className="icon-responsive-sm text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12.5%</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-responsive-xl font-bold">12.5%</div>
+            <p className="text-responsive-xs text-muted-foreground">
               +2.1% dari bulan lalu
             </p>
           </CardContent>
@@ -144,25 +145,25 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Products */}
-      <Card>
+      <Card className="card-responsive">
         <CardHeader>
-          <CardTitle>Produk Terbaru</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-responsive-lg">Produk Terbaru</CardTitle>
+          <CardDescription className="text-responsive-sm">
             5 produk terakhir yang ditambahkan ke katalog
           </CardDescription>
         </CardHeader>
         <CardContent>
           {stats.recentProducts.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-8 text-muted-foreground text-responsive-sm">
               Belum ada produk. <Link href="/admin/products/add" className="text-primary hover:underline">Tambah produk pertama</Link>
             </div>
           ) : (
             <div className="space-y-4">
               {stats.recentProducts.map((product) => (
-                <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div key={product.id} className="flex items-center justify-between p-responsive border rounded-lg">
                   <div className="flex items-center gap-4">
                     {product.images && product.images.length > 0 && (
-                      <div className="w-12 h-12 relative rounded-lg overflow-hidden">
+                      <div className="w-12 h-12 relative rounded-lg overflow-hidden flex-shrink-0">
                         <Image
                           src={imageErrors[product.id] ? '/placeholder-image.svg' : product.images[0]}
                           alt={product.name}
@@ -172,17 +173,17 @@ export default function AdminDashboard() {
                         />
                       </div>
                     )}
-                    <div>
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-responsive-sm font-medium truncate">{product.name}</h3>
+                      <p className="text-responsive-xs text-muted-foreground truncate">
                         {product.brand} • {product.category}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">Rp {product.price.toLocaleString('id-ID')}</p>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-responsive-sm font-medium">Rp {product.price.toLocaleString('id-ID')}</p>
                     {product.promo && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-responsive-xs bg-red-100 text-red-800">
                         Promo
                       </span>
                     )}
@@ -196,49 +197,49 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
+        <Card className="card-responsive">
           <CardHeader>
-            <CardTitle>Aksi Cepat</CardTitle>
+            <CardTitle className="text-responsive-lg">Aksi Cepat</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Button asChild variant="outline" className="w-full justify-start">
+            <Button asChild variant="outline" className="w-full justify-start btn-responsive touch-target">
               <Link href="/admin/products">
-                <Package className="h-4 w-4 mr-2" />
-                Kelola Produk
+                <Package className="icon-responsive-sm mr-2" />
+                <span className="text-responsive-sm">Kelola Produk</span>
               </Link>
             </Button>
-            <Button asChild variant="outline" className="w-full justify-start">
+            <Button asChild variant="outline" className="w-full justify-start btn-responsive touch-target">
               <Link href="/admin/products/add">
-                <Plus className="h-4 w-4 mr-2" />
-                Tambah Produk Baru
+                <Plus className="icon-responsive-sm mr-2" />
+                <span className="text-responsive-sm">Tambah Produk Baru</span>
               </Link>
             </Button>
-            <Button asChild variant="outline" className="w-full justify-start">
+            <Button asChild variant="outline" className="w-full justify-start btn-responsive touch-target">
               <Link href="/admin/promos">
-                <Tag className="h-4 w-4 mr-2" />
-                Kelola Promo
+                <Tag className="icon-responsive-sm mr-2" />
+                <span className="text-responsive-sm">Kelola Promo</span>
               </Link>
             </Button>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="card-responsive">
           <CardHeader>
-            <CardTitle>Status Sistem</CardTitle>
+            <CardTitle className="text-responsive-lg">Status Sistem</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm">Database</span>
-                <span className="text-sm text-green-600">Terhubung</span>
+                <span className="text-responsive-sm">Database</span>
+                <span className="text-responsive-sm text-green-600">Terhubung</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Storage</span>
-                <span className="text-sm text-green-600">Aktif</span>
+                <span className="text-responsive-sm">Storage</span>
+                <span className="text-responsive-sm text-green-600">Aktif</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Autentikasi</span>
-                <span className="text-sm text-green-600">Aman</span>
+                <span className="text-responsive-sm">Autentikasi</span>
+                <span className="text-responsive-sm text-green-600">Aman</span>
               </div>
             </div>
           </CardContent>

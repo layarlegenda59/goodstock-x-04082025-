@@ -171,7 +171,7 @@ export default function AdminLayout({
   if (isAdminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="icon-responsive animate-spin" />
       </div>
     );
   }
@@ -187,14 +187,14 @@ export default function AdminLayout({
     if (isAdminLoading) {
       return (
         <div className="min-h-screen flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin" />
+          <Loader2 className="icon-responsive animate-spin" />
         </div>
       );
     }
     // If not loading but no user/profile, show loading (redirect handled in useEffect)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="icon-responsive animate-spin" />
       </div>
     );
   }
@@ -203,7 +203,7 @@ export default function AdminLayout({
     // Show loading (redirect handled in useEffect)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="icon-responsive animate-spin" />
       </div>
     );
   }
@@ -214,7 +214,7 @@ export default function AdminLayout({
       <AdminSidebar />
       <div className="lg:ml-64 min-h-screen">
         <AdminHeader />
-        <main className="p-4 lg:p-6">
+        <main className="p-responsive">
           {children}
         </main>
       </div>

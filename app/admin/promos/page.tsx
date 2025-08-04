@@ -147,10 +147,10 @@ export default function PromosPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Promo Management</h1>
+          <h1 className="text-responsive-2xl font-bold">Promo Management</h1>
         </div>
-        <Card>
-          <CardContent className="p-6">
+        <Card className="card-responsive">
+          <CardContent className="p-responsive">
             <div className="animate-pulse space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="h-16 bg-gray-200 rounded"></div>
@@ -165,61 +165,61 @@ export default function PromosPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white">
           Promo Management
         </h1>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+      <div className="grid-responsive gap-6">
+        <Card className="card-responsive">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Tag className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-responsive-sm font-medium">Total Products</CardTitle>
+            <Tag className="icon-responsive-sm text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{products.length}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-responsive-xl font-bold">{products.length}</div>
+            <p className="text-responsive-xs text-muted-foreground">
               All products in catalog
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="card-responsive">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Promo Items</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-responsive-sm font-medium">Promo Items</CardTitle>
+            <TrendingUp className="icon-responsive-sm text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{promoProducts.length}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-responsive-xl font-bold">{promoProducts.length}</div>
+            <p className="text-responsive-xs text-muted-foreground">
               Products with active promotions
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="card-responsive">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Discount</CardTitle>
-            <Tag className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-responsive-sm font-medium">Avg Discount</CardTitle>
+            <Tag className="icon-responsive-sm text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-responsive-xl font-bold">
               {promoProducts.length > 0 
                 ? Math.round(promoProducts.reduce((sum, p) => sum + (p.discount || 0), 0) / promoProducts.length)
                 : 0}%
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-responsive-xs text-muted-foreground">
               Average discount rate
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
+      <Card className="card-responsive">
         <CardHeader>
-          <CardTitle>Promo Products Management</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-responsive-lg">Promo Products Management</CardTitle>
+          <CardDescription className="text-responsive-sm">
             Manage promotional status and discounts for your products
           </CardDescription>
         </CardHeader>
@@ -227,44 +227,44 @@ export default function PromosPage() {
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 icon-responsive-sm" />
               <Input
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-responsive-sm"
               />
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-48 text-responsive-sm">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="sepatu">Sepatu</SelectItem>
-                <SelectItem value="tas">Tas</SelectItem>
-                <SelectItem value="pakaian">Pakaian</SelectItem>
+                <SelectItem value="all" className="text-responsive-sm">All Categories</SelectItem>
+                <SelectItem value="sepatu" className="text-responsive-sm">Sepatu</SelectItem>
+                <SelectItem value="tas" className="text-responsive-sm">Tas</SelectItem>
+                <SelectItem value="pakaian" className="text-responsive-sm">Pakaian</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Products Table */}
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Discount (%)</TableHead>
-                  <TableHead>Promo Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-responsive-sm">Product</TableHead>
+                  <TableHead className="text-responsive-sm hidden md:table-cell">Category</TableHead>
+                  <TableHead className="text-responsive-sm">Price</TableHead>
+                  <TableHead className="text-responsive-sm hidden sm:table-cell">Discount (%)</TableHead>
+                  <TableHead className="text-responsive-sm hidden lg:table-cell">Promo Status</TableHead>
+                  <TableHead className="text-right text-responsive-sm">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredProducts.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground text-responsive-sm">
                       No products found
                     </TableCell>
                   </TableRow>
@@ -277,25 +277,38 @@ export default function PromosPage() {
                             <img
                               src={product.images[0]}
                               alt={product.name}
-                              className="w-10 h-10 object-cover rounded-lg"
+                              className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-lg flex-shrink-0"
                             />
                           )}
-                          <div>
-                            <div className="font-medium">{product.name}</div>
-                            <div className="text-sm text-muted-foreground">{product.brand}</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-responsive-sm font-medium truncate">{product.name}</div>
+                            <div className="text-responsive-xs text-muted-foreground truncate">{product.brand}</div>
+                            <div className="md:hidden text-responsive-xs text-muted-foreground capitalize">{product.category}</div>
+                            <div className="sm:hidden text-responsive-xs">
+                              {product.discount && product.discount > 0 ? `${product.discount}% off` : 'No discount'}
+                            </div>
+                            <div className="lg:hidden text-responsive-xs">
+                              <Badge 
+                                variant={product.promo ? "default" : "secondary"}
+                                className="cursor-pointer text-responsive-xs touch-target mt-1"
+                                onClick={() => togglePromo(product.id, product.promo)}
+                              >
+                                {product.promo ? 'Active' : 'Inactive'}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         <div>
-                          <div className="capitalize">{product.category}</div>
-                          <div className="text-sm text-muted-foreground">{product.subcategory}</div>
+                          <div className="text-responsive-sm capitalize">{product.category}</div>
+                          <div className="text-responsive-xs text-muted-foreground">{product.subcategory}</div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="font-medium">Rp {product.price.toLocaleString('id-ID')}</div>
+                        <div className="text-responsive-sm font-medium">Rp {product.price.toLocaleString('id-ID')}</div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden sm:table-cell">
                         <Input
                           type="number"
                           min="0"
@@ -307,28 +320,28 @@ export default function PromosPage() {
                               updateDiscount(product.id, discount);
                             }
                           }}
-                          className="w-20"
+                          className="w-16 sm:w-20 text-responsive-sm"
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden lg:table-cell">
                         <Badge 
                           variant={product.promo ? "default" : "secondary"}
-                          className="cursor-pointer"
+                          className="cursor-pointer text-responsive-xs touch-target"
                           onClick={() => togglePromo(product.id, product.promo)}
                         >
                           {product.promo ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="sm" asChild>
+                        <div className="flex items-center justify-end gap-1">
+                          <Button variant="ghost" size="sm" asChild className="touch-target">
                             <Link href={`/produk/${product.id}`}>
-                              <Eye className="h-4 w-4" />
+                              <Eye className="icon-responsive-sm" />
                             </Link>
                           </Button>
-                          <Button variant="ghost" size="sm" asChild>
+                          <Button variant="ghost" size="sm" asChild className="touch-target">
                             <Link href={`/admin/products/edit/${product.id}`}>
-                              <Edit className="h-4 w-4" />
+                              <Edit className="icon-responsive-sm" />
                             </Link>
                           </Button>
                         </div>

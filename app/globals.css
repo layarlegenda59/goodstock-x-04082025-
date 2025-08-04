@@ -134,3 +134,116 @@
     display: none;
   }
 }
+
+/* Global Mobile Responsive Utilities */
+@layer utilities {
+  /* Mobile-first responsive text sizes */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+  
+  .text-responsive-base {
+    @apply text-sm sm:text-base md:text-lg;
+  }
+  
+  .text-responsive-lg {
+    @apply text-base sm:text-lg md:text-xl;
+  }
+  
+  .text-responsive-xl {
+    @apply text-lg sm:text-xl md:text-2xl;
+  }
+  
+  .text-responsive-2xl {
+    @apply text-xl sm:text-2xl md:text-3xl;
+  }
+  
+  .text-responsive-3xl {
+    @apply text-2xl sm:text-3xl md:text-4xl;
+  }
+  
+  /* Mobile-first responsive padding */
+  .p-responsive {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+  
+  .px-responsive {
+    @apply px-3 sm:px-4 md:px-6;
+  }
+  
+  .py-responsive {
+    @apply py-3 sm:py-4 md:py-6;
+  }
+  
+  /* Mobile-first responsive margins */
+  .m-responsive {
+    @apply m-3 sm:m-4 md:m-6;
+  }
+  
+  .mx-responsive {
+    @apply mx-3 sm:mx-4 md:mx-6;
+  }
+  
+  .my-responsive {
+    @apply my-3 sm:my-4 md:my-6;
+  }
+  
+  /* Mobile-first responsive gaps */
+  .gap-responsive {
+    @apply gap-3 sm:gap-4 md:gap-6;
+  }
+  
+  .gap-responsive-sm {
+    @apply gap-2 sm:gap-3 md:gap-4;
+  }
+  
+  /* Mobile-first responsive button sizes */
+  .btn-responsive {
+    @apply px-3 py-2 text-sm sm:px-4 sm:py-2.5 sm:text-base;
+  }
+  
+  .btn-responsive-sm {
+    @apply px-2 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm;
+  }
+  
+  .btn-responsive-lg {
+    @apply px-4 py-2.5 text-sm sm:px-6 sm:py-3 sm:text-base;
+  }
+  
+  /* Mobile-first responsive icon sizes */
+  .icon-responsive {
+    @apply w-4 h-4 sm:w-5 sm:h-5;
+  }
+  
+  .icon-responsive-sm {
+    @apply w-3.5 h-3.5 sm:w-4 sm:h-4;
+  }
+  
+  .icon-responsive-lg {
+    @apply w-5 h-5 sm:w-6 sm:h-6;
+  }
+  
+  /* Mobile-first responsive card padding */
+  .card-responsive {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+  
+  /* Mobile-first responsive grid gaps */
+  .grid-responsive {
+    @apply gap-3 sm:gap-4 md:gap-6;
+  }
+  
+  /* Mobile touch-friendly minimum sizes */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Mobile-optimized container */
+  .container-responsive {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+}

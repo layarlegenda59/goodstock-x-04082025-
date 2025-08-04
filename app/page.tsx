@@ -54,21 +54,21 @@ export default function HomePage() {
   };
 
   return (
-    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
+    <div className="container mx-auto container-responsive py-responsive space-y-6 sm:space-y-8">
       {/* Hero Banner */}
       <HeroBanner />
 
       {/* Category Quick Links */}
       <section>
-        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Kategori Populer</h2>
+        <h2 className="text-responsive-xl font-bold mb-4 sm:mb-6">Kategori Populer</h2>
         <CategoryGrid />
       </section>
 
       {/* Featured Products */}
       <section>
-        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Produk Unggulan</h2>
+        <h2 className="text-responsive-xl font-bold mb-4 sm:mb-6">Produk Unggulan</h2>
         {loading ? (
-          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-responsive">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="animate-pulse">
                 <div className="bg-gray-200 aspect-square rounded-lg mb-2"></div>
@@ -78,14 +78,14 @@ export default function HomePage() {
             ))}
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-responsive">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
           <div className="text-center py-8 text-gray-500">
-            <p className="text-sm sm:text-base">Belum ada produk tersedia.</p>
+            <p className="text-responsive-sm">Belum ada produk tersedia.</p>
           </div>
         )}
       </section>

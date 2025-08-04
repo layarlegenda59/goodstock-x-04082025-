@@ -10,12 +10,12 @@ const categoryImages = {
 
 export default function CategoryGrid() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-responsive mb-6 sm:mb-8">
       {Object.entries(categories).map(([key, category]) => (
         <Link
           key={key}
           href={`/kategori/${key}`}
-          className="group bg-card rounded-lg border overflow-hidden hover:shadow-lg transition-all duration-300"
+          className="group bg-card rounded-lg border overflow-hidden hover:shadow-lg transition-all duration-300 touch-target"
         >
           <div className="aspect-[4/3] relative overflow-hidden">
             <Image
@@ -26,7 +26,7 @@ export default function CategoryGrid() {
             />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white text-center px-2">
+              <h3 className="text-responsive-lg font-bold text-white text-center px-2">
                 {category.name}
               </h3>
             </div>
