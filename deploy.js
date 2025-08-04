@@ -107,24 +107,26 @@ function main() {
     log('git push -u origin main', 'cyan');
   }
   
-  // Check if Vercel CLI is installed
+  // Check if Vercel CLI is available
   log('\n🔧 Memeriksa Vercel CLI...', 'cyan');
   try {
-    execSync('vercel --version', { stdio: 'pipe' });
-    log('✅ Vercel CLI sudah terinstall', 'green');
+    execSync('npx vercel --version', { stdio: 'pipe' });
+    log('✅ Vercel CLI tersedia', 'green');
   } catch (error) {
-    log('⚠️  Vercel CLI belum terinstall. Installing...', 'yellow');
-    if (!runCommand('npm install -g vercel', 'Install Vercel CLI')) {
-      log('\n❌ Gagal install Vercel CLI. Silakan install manual:', 'red');
-      log('npm install -g vercel', 'cyan');
-      process.exit(1);
-    }
+    log('❌ Vercel CLI tidak tersedia', 'red');
+    process.exit(1);
   }
   
   // Deploy to Vercel
   log('\n🚀 Deploying ke Vercel...', 'magenta');
-  if (!runCommand('vercel --prod', 'Vercel deployment')) {
-    log('\n❌ Deployment gagal. Silakan cek error di atas.', 'red');
+  log('\n📝 Catatan: Anda mungkin perlu login ke Vercel terlebih dahulu.', 'yellow');
+  log('Jika diminta login, ikuti instruksi di terminal.', 'yellow');
+  
+  if (!runCommand('npx vercel --prod', 'Vercel deployment')) {
+    log('\n❌ Deployment gagal. Kemungkinan penyebab:', 'red');
+    log('  1. Belum login ke Vercel (jalankan: npx vercel login)', 'cyan');
+    log('  2. Environment variables belum diset di Vercel Dashboard', 'cyan');
+    log('  3. Repository belum di-push ke GitHub', 'cyan');
     process.exit(1);
   }
   

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "node deploy.js",
-    "deploy:vercel": "vercel --prod",
+    "deploy:vercel": "npx vercel --prod",
     "type-check": "npx tsc --noEmit"
   },
   "dependencies": {
