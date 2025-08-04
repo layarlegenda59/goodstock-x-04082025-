@@ -88,16 +88,16 @@ export default function CartPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
         {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-3">
           {items.map((item) => (
             <div
               key={`${item.product.id}-${item.selectedSize}`}
-              className="bg-card border rounded-lg p-4"
+              className="bg-card border rounded-lg p-3 sm:p-4"
             >
-              <div className="flex gap-4">
-                <div className="relative w-20 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+              <div className="flex gap-3">
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
                   <Image
                     src={item.product.image}
                     alt={item.product.name}
@@ -107,12 +107,12 @@ export default function CartPage() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start mb-2">
+                  <div className="flex justify-between items-start mb-1.5">
                     <div>
-                      <p className="text-sm font-semibold text-primary">
+                      <p className="text-xs sm:text-sm font-semibold text-primary">
                         {item.product.brand}
                       </p>
-                      <h3 className="font-medium text-sm line-clamp-2">
+                      <h3 className="font-medium text-xs sm:text-sm line-clamp-2">
                         {item.product.name}
                       </h3>
                     </div>
@@ -120,19 +120,19 @@ export default function CartPage() {
                       onClick={() => removeItem(item.product.id, item.selectedSize)}
                       className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   </div>
 
-                  <div className="text-xs text-muted-foreground mb-2">
+                  <div className="text-xs text-muted-foreground mb-1.5">
                     <span>Ukuran: {item.selectedSize}</span>
                     {item.selectedColor && (
-                      <span className="ml-4">Warna: {item.selectedColor}</span>
+                      <span className="ml-2 sm:ml-4">Warna: {item.selectedColor}</span>
                     )}
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <button
                         onClick={() =>
                           handleQuantityChange(
@@ -145,7 +145,7 @@ export default function CartPage() {
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-8 text-center text-sm font-medium">
+                      <span className="w-6 sm:w-8 text-center text-xs sm:text-sm font-medium">
                         {item.quantity}
                       </span>
                       <button
@@ -163,7 +163,7 @@ export default function CartPage() {
                     </div>
 
                     <div className="text-right">
-                      <div className="font-bold">
+                      <div className="font-bold text-sm sm:text-base">
                         {formatPrice(item.product.price * item.quantity)}
                       </div>
                       {item.quantity > 1 && (
@@ -178,16 +178,16 @@ export default function CartPage() {
             </div>
           ))}
 
-          <div className="flex justify-between items-center pt-4">
+          <div className="flex justify-between items-center pt-3">
             <button
               onClick={clearCart}
-              className="text-sm text-red-600 hover:text-red-700 underline"
+              className="text-xs sm:text-sm text-red-600 hover:text-red-700 underline"
             >
               Hapus Semua
             </button>
             <Link
               href="/"
-              className="text-sm text-primary hover:text-primary/80 underline"
+              className="text-xs sm:text-sm text-primary hover:text-primary/80 underline"
             >
               Lanjut Belanja
             </Link>
@@ -196,35 +196,35 @@ export default function CartPage() {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-card border rounded-lg p-6 sticky top-6">
-            <h2 className="text-lg font-semibold mb-4">Ringkasan Pesanan</h2>
+          <div className="bg-card border rounded-lg p-4 sm:p-6 sticky top-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Ringkasan Pesanan</h2>
             
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between text-sm">
+            <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
+              <div className="flex justify-between text-xs sm:text-sm">
                 <span>Subtotal ({items.reduce((sum, item) => sum + item.quantity, 0)} item)</span>
                 <span>{formatPrice(getTotalPrice())}</span>
               </div>
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs sm:text-sm">
                 <span>Ongkos Kirim</span>
                 <span className="text-muted-foreground">Akan dihitung</span>
               </div>
               <hr />
-              <div className="flex justify-between font-semibold">
+              <div className="flex justify-between font-semibold text-sm sm:text-base">
                 <span>Total</span>
-                <span className="text-lg">{formatPrice(getTotalPrice())}</span>
+                <span className="text-base sm:text-lg">{formatPrice(getTotalPrice())}</span>
               </div>
             </div>
 
             <button
               onClick={handleWhatsAppCheckout}
               disabled={isCheckingOut}
-              className="w-full bg-[#25D366] hover:bg-[#20BA5A] disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+              className="w-full bg-[#25D366] hover:bg-[#20BA5A] disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
             >
-              <MessageCircle className="w-5 h-5" />
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               {isCheckingOut ? 'Memproses...' : 'Checkout via WhatsApp'}
             </button>
 
-            <p className="text-xs text-muted-foreground text-center mt-3">
+            <p className="text-xs text-muted-foreground text-center mt-2 sm:mt-3">
               Anda akan diarahkan ke WhatsApp untuk menyelesaikan pesanan
             </p>
           </div>
