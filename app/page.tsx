@@ -60,13 +60,13 @@ export default function HomePage() {
 
       {/* Category Quick Links */}
       <section>
-        <h2 className="text-responsive-xl font-bold mb-4 sm:mb-6">Kategori Populer</h2>
+        <h2 className="text-responsive-2xl font-bold mb-4 sm:mb-6">Kategori Populer</h2>
         <CategoryGrid />
       </section>
 
       {/* Featured Products */}
       <section>
-        <h2 className="text-responsive-xl font-bold mb-4 sm:mb-6">Produk Unggulan</h2>
+        <h2 className="text-responsive-2xl font-bold mb-4 sm:mb-6">Produk Unggulan</h2>
         {loading ? (
           <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 grid-responsive">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (

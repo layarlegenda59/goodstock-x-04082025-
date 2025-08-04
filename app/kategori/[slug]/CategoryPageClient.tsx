@@ -149,8 +149,8 @@ export default function CategoryPageClient({ params, searchParams }: CategoryPag
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="flex flex-col md:flex-row gap-6">
+    <div className="container mx-auto container-responsive py-responsive">
+      <div className="flex flex-col md:flex-row gap-responsive">
         {/* Desktop Sidebar */}
         <div className="hidden md:block md:w-80">
           <FilterDrawer
@@ -165,22 +165,22 @@ export default function CategoryPageClient({ params, searchParams }: CategoryPag
         {/* Main Content */}
         <div className="flex-1">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">
+              <h1 className="text-responsive-2xl font-bold">
                 {subcategory || pageTitle}
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-muted-foreground mt-1 text-responsive-sm">
                 {filteredAndSortedProducts.length} produk ditemukan
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               {/* Sort Dropdown */}
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="p-2 border rounded-lg bg-background text-sm"
+                className="flex-1 sm:flex-none btn-responsive border rounded-lg bg-background text-responsive-sm"
               >
                 <option value="newest">Terbaru</option>
                 <option value="price-low">Harga Terendah</option>
@@ -191,37 +191,37 @@ export default function CategoryPageClient({ params, searchParams }: CategoryPag
               {/* Mobile Filter Button */}
               <button
                 onClick={() => setIsFilterOpen(true)}
-                className="md:hidden flex items-center gap-2 p-2 border rounded-lg bg-background hover:bg-accent transition-colors"
+                className="md:hidden flex items-center gap-2 btn-responsive border rounded-lg bg-background hover:bg-accent transition-colors touch-target"
               >
-                <Filter className="w-4 h-4" />
-                <span className="text-sm">Filter</span>
+                <Filter className="icon-responsive-sm" />
+                <span className="text-responsive-sm">Filter</span>
               </button>
             
             {/* Desktop Filter Toggle */}
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="hidden md:flex items-center gap-2 p-2 border rounded-lg bg-background hover:bg-accent transition-colors"
+              className="hidden md:flex items-center gap-2 btn-responsive border rounded-lg bg-background hover:bg-accent transition-colors"
             >
-              <Filter className="w-4 h-4" />
-              <span className="text-sm">Filter</span>
+              <Filter className="icon-responsive-sm" />
+              <span className="text-responsive-sm">Filter</span>
             </button>
             </div>
           </div>
 
           {/* Products Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-responsive">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div key={i} className="animate-pulse">
                   <div className="bg-gray-200 aspect-square rounded-lg mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-1"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded mb-1"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded w-2/3"></div>
                 </div>
               ))}
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-responsive">
                 {filteredAndSortedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -229,10 +229,10 @@ export default function CategoryPageClient({ params, searchParams }: CategoryPag
 
               {/* Empty State */}
               {filteredAndSortedProducts.length === 0 && (
-                <div className="text-center py-12">
-                  <SlidersHorizontal className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Tidak ada produk ditemukan</h3>
-                  <p className="text-muted-foreground">
+                <div className="text-center py-responsive">
+                  <SlidersHorizontal className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-responsive-lg font-medium mb-2">Tidak ada produk ditemukan</h3>
+                  <p className="text-muted-foreground text-responsive-sm">
                     Coba sesuaikan filter Anda
                   </p>
                 </div>

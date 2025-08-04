@@ -181,8 +181,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+    <div className="container mx-auto container-responsive py-responsive">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-responsive mb-12">
         {/* Product Images */}
         <div className="space-y-4">
           <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
@@ -250,28 +250,28 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         </div>
 
         {/* Product Details */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <div className="text-sm text-primary font-semibold mb-2">
+            <div className="text-responsive-xs text-primary font-semibold mb-2">
               {product.brand}
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-4">
+            <h1 className="text-responsive-2xl font-bold mb-4">
               {product.name}
             </h1>
             
             <div className="flex items-center gap-4 mb-4">
-              <div className="text-3xl font-bold text-foreground">
+              <div className="text-responsive-2xl sm:text-3xl font-bold text-foreground">
                 {formatPrice(product.price)}
               </div>
               {product.originalPrice && product.originalPrice > product.price && (
-                <div className="text-lg text-muted-foreground line-through">
+                <div className="text-responsive-base sm:text-lg text-muted-foreground line-through">
                   {formatPrice(product.originalPrice)}
                 </div>
               )}
             </div>
 
             {product.description && (
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-6 text-responsive-sm">
                 {product.description}
               </p>
             )}
@@ -280,13 +280,13 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           {/* Color Selection */}
           {product.colors && product.colors.length > 1 && (
             <div>
-              <h3 className="font-medium mb-3">Warna</h3>
+              <h3 className="font-medium mb-3 text-responsive-base">Warna</h3>
               <div className="flex gap-2">
                 {product.colors.map((color) => (
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+                    className={`btn-responsive border rounded-lg text-responsive-xs transition-colors touch-target ${
                       selectedColor === color
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'hover:bg-accent'
@@ -301,13 +301,13 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           {/* Size Selection */}
           <div>
-            <h3 className="font-medium mb-3">Ukuran</h3>
+            <h3 className="font-medium mb-3 text-responsive-base">Ukuran</h3>
             <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
               {product.sizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`py-2 px-3 border rounded-lg text-sm transition-colors ${
+                  className={`btn-responsive border rounded-lg text-responsive-xs transition-colors touch-target ${
                     selectedSize === size
                       ? 'border-primary bg-primary text-primary-foreground'
                       : 'hover:bg-accent'
@@ -324,28 +324,28 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             <button
               onClick={handleAddToCart}
               disabled={!selectedSize}
-              className="w-full bg-primary hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-primary-foreground py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+              className="w-full bg-primary hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-primary-foreground btn-responsive rounded-lg font-medium flex items-center justify-center gap-2 transition-colors touch-target text-responsive-sm"
             >
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="icon-responsive-sm" />
               {isAddingToCart ? 'Menambahkan...' : 'Tambah ke Keranjang'}
             </button>
             
             <button
               onClick={handleWishlistToggle}
-              className={`w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors border ${
+              className={`w-full btn-responsive rounded-lg font-medium flex items-center justify-center gap-2 transition-colors border touch-target text-responsive-sm ${
                 inWishlist
                   ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
                   : 'border-gray-300 hover:bg-accent'
               }`}
             >
-              <Heart className={`w-5 h-5 ${inWishlist ? 'fill-current' : ''}`} />
+              <Heart className={`icon-responsive-sm ${inWishlist ? 'fill-current' : ''}`} />
               {inWishlist ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}
             </button>
           </div>
 
           {/* Product Info */}
           <div className="border-t pt-6 space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-4 text-responsive-xs">
               <div>
                 <span className="text-muted-foreground">Kategori:</span>
                 <div className="font-medium capitalize">{product.category}</div>
@@ -370,8 +370,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section>
-          <h2 className="text-2xl font-bold mb-6">Produk Serupa</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <h2 className="text-responsive-xl font-bold mb-6">Produk Serupa</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-responsive">
             {relatedProducts.map((relatedProduct) => (
               <ProductCard key={relatedProduct.id} product={relatedProduct} />
             ))}

@@ -51,7 +51,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group bg-card rounded-lg border overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer">
+    <div className="group bg-card rounded-lg border overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer card-responsive">
       <div onClick={handleCardClick}>
         <div className="relative">
           <div className="aspect-square relative overflow-hidden bg-muted">
@@ -67,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           
           {/* Discount Badge */}
           {product.discount && product.discount > 0 && (
-            <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 bg-red-500 text-white text-responsive-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded">
+            <div className="absolute top-1 sm:top-2 left-1 sm:left-2 bg-red-500 text-white text-responsive-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
               {product.discount}% OFF
             </div>
           )}
@@ -75,32 +75,32 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Wishlist Button */}
           <button
             onClick={handleWishlistToggle}
-            className={`absolute top-1.5 right-1.5 sm:top-2 sm:right-2 p-1.5 sm:p-2 rounded-full transition-all duration-200 touch-target ${
+            className={`absolute top-1 sm:top-2 right-1 sm:right-2 p-1.5 sm:p-2 rounded-full transition-colors touch-target ${
               inWishlist
-                ? 'bg-red-500 text-white'
-                : 'bg-white/90 text-gray-600 hover:bg-red-500 hover:text-white'
+                ? 'bg-red-100 text-red-600'
+                : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-600'
             }`}
           >
-            <Heart className="icon-responsive-sm" fill={isHydrated && inWishlist ? 'currentColor' : 'none'} />
+            <Heart className={`icon-responsive-xs ${inWishlist ? 'fill-current' : ''}`} />
           </button>
         </div>
 
-        <div className="card-responsive">
-          <div className="text-responsive-xs font-semibold text-primary mb-1">
-            {product.brand}
-          </div>
-          <h3 className="font-medium text-responsive-xs mb-2 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem] leading-tight">
+        <div className="padding-responsive">
+          <h3 className="font-medium text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors text-responsive-sm">
             {product.name}
           </h3>
+          <p className="text-responsive-xs text-gray-500 mb-2">{product.brand}</p>
           
-          <div className="mb-2 sm:mb-3">
-            {product.originalPrice && product.originalPrice > product.price && (
-              <div className="text-responsive-xs text-muted-foreground line-through">
-                {formatPrice(product.originalPrice)}
-              </div>
-            )}
-            <div className="text-responsive-base font-bold text-foreground">
-              {formatPrice(product.price)}
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="font-bold text-responsive-base text-gray-900">
+                Rp {product.price.toLocaleString('id-ID')}
+              </span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <span className="text-responsive-xs text-gray-500 line-through">
+                  Rp {product.originalPrice.toLocaleString('id-ID')}
+                </span>
+              )}
             </div>
           </div>
 
