@@ -332,7 +332,7 @@ export default function Header() {
           </div>
 
           {/* Mobile Search */}
-          <div className="px-3 pb-3 sm:px-4 sm:pb-4">
+          <div className="px-3 pb-3 sm:px-4 sm:pb-4 relative">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground icon-responsive-sm" />
               <input
@@ -344,6 +344,30 @@ export default function Header() {
                 className="w-full pl-10 pr-4 py-2.5 sm:py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all text-responsive-sm"
               />
             </form>
+            
+            {/* Mobile Search Suggestions */}
+            {showSearchSuggestions && (
+              <div className="absolute top-full left-3 right-3 sm:left-4 sm:right-4 mt-1 bg-background border rounded-lg shadow-lg z-[80]">
+                <div className="p-3">
+                  <div className="text-xs font-medium text-muted-foreground mb-2">Pencarian Populer</div>
+                  <div className="space-y-1">
+                    {popularSearches.map((search) => (
+                      <button
+                        key={search}
+                        onClick={() => {
+                          setSearchQuery(search);
+                          router.push(`/search?q=${encodeURIComponent(search)}`);
+                          setShowSearchSuggestions(false);
+                        }}
+                        className="block w-full text-left px-3 py-2 text-xs hover:bg-accent rounded-md transition-colors touch-target"
+                      >
+                        {search}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
