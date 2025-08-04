@@ -285,7 +285,7 @@ export default function Header() {
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {/* Mobile User Menu */}
               {isAuthenticated ? (
-                <div className="p-1.5 sm:p-2 flex items-center justify-center">
+                <div className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center">
                   <div className="w-5 h-5 sm:w-6 sm:h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
                     {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                   </div>
@@ -293,7 +293,7 @@ export default function Header() {
               ) : (
                 <Link
                   href="/auth/login"
-                  className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                  className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
                   title="Masuk / Daftar"
                 >
                   <User className="icon-responsive-sm" />
@@ -302,7 +302,7 @@ export default function Header() {
 
               <Link
                 href="/cart"
-                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
               >
                 <ShoppingCart className="icon-responsive-sm" />
                 {cartItems > 0 && (
@@ -313,7 +313,7 @@ export default function Header() {
               </Link>
               <Link
                 href="/wishlist"
-                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
               >
                 <Heart className="icon-responsive-sm" />
                 {wishlistItems.length > 0 && (
@@ -324,7 +324,7 @@ export default function Header() {
               </Link>
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target"
+                className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors touch-target flex items-center justify-center"
               >
                 {theme === 'dark' ? <Sun className="icon-responsive-sm" /> : <Moon className="icon-responsive-sm" />}
               </button>
