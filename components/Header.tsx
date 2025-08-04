@@ -448,7 +448,7 @@ export default function Header() {
                       <Link
                         key={sub}
                         href={`/kategori/${key}?subcategory=${encodeURIComponent(sub)}`}
-                        className="block text-xs text-muted-foreground py-0.5 hover:text-foreground transition-colors touch-target"
+                        className="block text-xs text-muted-foreground leading-tight hover:text-foreground transition-colors touch-target min-h-[24px] flex items-center"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {sub}
