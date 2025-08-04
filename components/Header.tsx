@@ -350,30 +350,30 @@ export default function Header() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t bg-background max-h-[calc(100vh-120px)] overflow-y-auto">
-            <div className="p-responsive space-y-3">
+            <div className="px-4 py-3 space-y-2">
               {/* Mobile Auth Section */}
               {isAuthenticated ? (
-                <div className="border-b pb-3 mb-3">
+                <div className="border-b pb-2 mb-2">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-responsive-xs font-medium">
+                    <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
                       {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                     </div>
                     <div>
-                      <div className="text-responsive-sm font-medium">{profile?.full_name || 'User'}</div>
-                      <div className="text-responsive-xs text-muted-foreground">{profile?.email}</div>
+                      <div className="text-sm font-medium">{profile?.full_name || 'User'}</div>
+                      <div className="text-xs text-muted-foreground">{profile?.email}</div>
                     </div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     <Link
                       href="/akun"
-                      className="block text-responsive-xs hover:text-primary transition-colors py-2 touch-target"
+                      className="block text-xs hover:text-primary transition-colors py-1.5 touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Akun Saya
                     </Link>
                     <Link
                       href="/akun/pesanan"
-                      className="block text-responsive-xs hover:text-primary transition-colors py-2 touch-target"
+                      className="block text-xs hover:text-primary transition-colors py-1.5 touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Riwayat Pesanan
@@ -383,25 +383,25 @@ export default function Header() {
                         handleLogout();
                         setIsMenuOpen(false);
                       }}
-                      className="block text-responsive-xs text-red-600 hover:text-red-700 transition-colors py-2 touch-target"
+                      className="block text-xs text-red-600 hover:text-red-700 transition-colors py-1.5 touch-target"
                     >
                       Keluar
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="border-b pb-3 mb-3">
+                <div className="border-b pb-2 mb-2">
                   <div className="flex gap-2">
                     <Link
                       href="/auth/login"
-                      className="flex-1 text-center btn-responsive-sm border rounded hover:bg-accent transition-colors touch-target"
+                      className="flex-1 text-center px-4 py-2.5 text-sm border rounded-lg hover:bg-accent transition-colors touch-target flex items-center justify-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Masuk
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="flex-1 text-center btn-responsive-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors touch-target"
+                      className="flex-1 text-center px-4 py-2.5 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors touch-target flex items-center justify-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Daftar
@@ -411,20 +411,20 @@ export default function Header() {
               )}
 
               {Object.entries(categories).map(([key, category]) => (
-                <div key={key}>
+                <div key={key} className="mb-2">
                   <Link
                     href={`/kategori/${key}`}
-                    className="block text-responsive-sm font-medium py-2 hover:text-primary transition-colors touch-target"
+                    className="block text-sm font-medium py-2 hover:text-primary transition-colors touch-target"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {category.name}
                   </Link>
-                  <div className="ml-3 space-y-1">
+                  <div className="ml-3 space-y-0.5">
                     {category.subcategories.map((sub) => (
                       <Link
                         key={sub}
                         href={`/kategori/${key}?subcategory=${encodeURIComponent(sub)}`}
-                        className="block text-responsive-xs text-muted-foreground py-1.5 hover:text-foreground transition-colors touch-target"
+                        className="block text-xs text-muted-foreground py-1 hover:text-foreground transition-colors touch-target"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {sub}
