@@ -5,21 +5,7 @@ import HeroBanner from '@/components/HeroBanner';
 import CategoryGrid from '@/components/CategoryGrid';
 import ProductCard from '@/components/ProductCard';
 import { supabase } from '@/lib/supabase';
-
-interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  discount: number | null;
-  images: string[];
-  category: string;
-  subcategory: string;
-  gender: string;
-  sizes: string[];
-  stock: number;
-  promo: boolean;
-}
+import { Product } from '@/store/wishlist';
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -46,12 +32,11 @@ export default function HomePage() {
         brand: product.brand,
         price: product.price,
         originalPrice: product.discount ? product.price / (1 - product.discount / 100) : product.price,
-        discount: product.discount || 0,
+        discount: product.discount || undefined,
         image: product.images?.[0] || '/placeholder-image.svg',
-        images: product.images || ['/placeholder-image.svg'],
-        category: product.category,
+        category: product.category as 'sepatu' | 'tas' | 'pakaian',
         subcategory: product.subcategory,
-        gender: product.gender,
+        gender: product.gender as 'pria' | 'wanita' | 'unisex',
         sizes: product.sizes || [],
         colors: ['Default'], // Default color since it's not in database
         isPromo: product.promo,

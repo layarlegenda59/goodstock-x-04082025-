@@ -63,7 +63,7 @@ export default function BantuanPage() {
     {
       icon: Phone,
       title: 'Telepon',
-      description: '+62 21 1234 5678',
+      description: '+62 812 7826 2893',
       action: 'Hubungi Sekarang',
       available: 'Senin-Jumat 09:00-17:00'
     },

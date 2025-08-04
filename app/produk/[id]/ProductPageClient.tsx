@@ -29,7 +29,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   const inWishlist = isInWishlist(product.id);
 
   // Use product images from Supabase
-  const productImages = product.images || [product.image];
+  const productImages = [product.image];
 
   // Helper functions for image handling
   const handleImageError = (index: number) => {
@@ -220,7 +220,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             )}
 
             {/* Discount Badge */}
-            {product.discount > 0 && (
+            {product.discount && product.discount > 0 && (
               <div className="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded">
                 {product.discount}% OFF
               </div>

@@ -9,7 +9,7 @@ interface FloatingWhatsAppProps {
 }
 
 export default function FloatingWhatsApp({ 
-  phoneNumber = "6281234567890", // Default Indonesian number format
+  phoneNumber = "6281278262893", // Default Indonesian number format
   message
 }: FloatingWhatsAppProps) {
   const [isHovered, setIsHovered] = useState(false);

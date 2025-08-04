@@ -66,7 +66,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
           
           {/* Discount Badge */}
-          {product.discount > 0 && (
+          {product.discount && product.discount > 0 && (
             <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
               {product.discount}% OFF
             </div>
