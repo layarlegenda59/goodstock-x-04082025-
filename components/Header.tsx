@@ -283,34 +283,34 @@ export default function Header() {
 
         {/* Mobile Header */}
         <div className="md:hidden">
-          <div className="flex items-center justify-between p-4">
+          <div className="flex items-center justify-between px-3 py-3 sm:px-4 sm:py-4">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 hover:bg-accent rounded-lg transition-colors"
+              className="p-2 hover:bg-accent rounded-lg transition-colors flex-shrink-0"
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link href="/" className="text-xl font-bold text-primary">
+            <Link href="/" className="flex-1 flex justify-center">
               <img 
                 src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
                 alt="Goodstock-X"
-                className="h-6 w-auto"
+                className="h-8 w-auto sm:h-10 max-w-[120px] sm:max-w-[140px]"
               />
             </Link>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {/* Mobile User Menu */}
               {isAuthenticated ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
+                <div className="flex items-center">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
                     {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                   </div>
                 </div>
               ) : (
                 <Link
                   href="/auth/login"
-                  className="text-sm font-medium text-primary"
+                  className="text-xs sm:text-sm font-medium text-primary px-2 py-1 rounded"
                 >
                   Masuk
                 </Link>
@@ -318,37 +318,37 @@ export default function Header() {
 
               <Link
                 href="/cart"
-                className="relative p-2 hover:bg-accent rounded-lg transition-colors"
+                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors"
               >
-                <ShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                 {cartItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {cartItems}
                   </span>
                 )}
               </Link>
               <Link
                 href="/wishlist"
-                className="relative p-2 hover:bg-accent rounded-lg transition-colors"
+                className="relative p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors"
               >
-                <Heart className="w-5 h-5" />
+                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                 {wishlistItems.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {wishlistItems.length}
                   </span>
                 )}
               </Link>
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-2 hover:bg-accent rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 hover:bg-accent rounded-lg transition-colors"
               >
-                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                {theme === 'dark' ? <Sun className="w-4 h-4 sm:w-5 sm:h-5" /> : <Moon className="w-4 h-4 sm:w-5 sm:h-5" />}
               </button>
             </div>
           </div>
 
           {/* Mobile Search */}
-          <div className="px-4 pb-4">
+          <div className="px-3 pb-3 sm:px-4 sm:pb-4">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <input
@@ -357,7 +357,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={handleSearchInputChange}
                 onKeyDown={handleSearchKeyDown}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
               />
             </form>
           </div>
