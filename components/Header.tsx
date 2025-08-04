@@ -374,10 +374,10 @@ export default function Header() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t bg-background max-h-[calc(100vh-120px)] overflow-y-auto">
-            <div className="px-4 py-3 space-y-2">
+            <div className="px-4 py-2 space-y-1">
               {/* Mobile Auth Section */}
               {isAuthenticated ? (
-                <div className="border-b pb-2 mb-2">
+                <div className="border-b pb-1.5 mb-1.5">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
                       {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
@@ -414,7 +414,7 @@ export default function Header() {
                   </div>
                 </div>
               ) : (
-                <div className="border-b pb-2 mb-2">
+                <div className="border-b pb-1.5 mb-1.5">
                   <div className="flex gap-2">
                     <Link
                       href="/auth/login"
@@ -435,20 +435,20 @@ export default function Header() {
               )}
 
               {Object.entries(categories).map(([key, category]) => (
-                <div key={key} className="mb-2">
+                <div key={key} className="mb-1">
                   <Link
                     href={`/kategori/${key}`}
-                    className="block text-sm font-medium py-2 hover:text-primary transition-colors touch-target"
+                    className="block text-sm font-medium py-1.5 hover:text-primary transition-colors touch-target"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {category.name}
                   </Link>
-                  <div className="ml-3 space-y-0.5">
+                  <div className="ml-3 space-y-0">
                     {category.subcategories.map((sub) => (
                       <Link
                         key={sub}
                         href={`/kategori/${key}?subcategory=${encodeURIComponent(sub)}`}
-                        className="block text-xs text-muted-foreground py-1 hover:text-foreground transition-colors touch-target"
+                        className="block text-xs text-muted-foreground py-0.5 hover:text-foreground transition-colors touch-target"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {sub}
