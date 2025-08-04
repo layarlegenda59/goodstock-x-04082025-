@@ -99,84 +99,70 @@ export default function Header() {
                 <img 
                   src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
                   alt="Goodstock-X"
-                  className="h-14 w-auto"
+                  className="h-14 w-auto max-w-[200px]"
                 />
               </Link>
 
               {/* Search Bar */}
-              <div className="flex-1 max-w-2xl">
+              <div className="flex-1 max-w-2xl relative">
                 <form onSubmit={handleSearch} className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                   <input
                     type="text"
                     placeholder="Cari produk, brand, atau kategori..."
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                     onKeyDown={handleSearchKeyDown}
-                    onFocus={() => setShowSearchSuggestions(searchQuery.length > 0)}
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full pl-12 pr-4 py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                   />
-                  
-                  {/* Search Suggestions Dropdown */}
-                  {showSearchSuggestions && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-                      {searchQuery.length > 0 && (
-                        <div className="p-3 border-b">
+                </form>
+                
+                {/* Search Suggestions */}
+                {showSearchSuggestions && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50">
+                    <div className="p-4">
+                      <div className="text-sm font-medium text-muted-foreground mb-2">Pencarian Populer</div>
+                      <div className="space-y-1">
+                        {popularSearches.map((search) => (
                           <button
-                            type="submit"
-                            className="flex items-center gap-3 w-full text-left hover:bg-accent p-2 rounded-md transition-colors"
+                            key={search}
+                            onClick={() => {
+                              setSearchQuery(search);
+                              router.push(`/search?q=${encodeURIComponent(search)}`);
+                              setShowSearchSuggestions(false);
+                            }}
+                            className="block w-full text-left px-3 py-2 text-sm hover:bg-accent rounded-md transition-colors"
                           >
-                            <Search className="w-4 h-4 text-muted-foreground" />
-                            <span>Cari &quot;<strong>{searchQuery}</strong>&quot;</span>
+                            {search}
                           </button>
-                        </div>
-                      )}
-                      
-                      <div className="p-3">
-                        <h4 className="text-sm font-medium text-muted-foreground mb-2">Pencarian Populer</h4>
-                        <div className="space-y-1">
-                          {popularSearches.map((search) => (
-                            <button
-                              key={search}
-                              type="button"
-                              onClick={() => {
-                                setSearchQuery(search);
-                                router.push(`/search?q=${encodeURIComponent(search)}`);
-                                setShowSearchSuggestions(false);
-                              }}
-                              className="flex items-center gap-3 w-full text-left hover:bg-accent p-2 rounded-md transition-colors text-sm"
-                            >
-                              <Search className="w-3 h-3 text-muted-foreground" />
-                              <span>{search}</span>
-                            </button>
-                          ))}
-                        </div>
+                        ))}
                       </div>
                     </div>
-                  )}
-                </form>
+                  </div>
+                )}
               </div>
 
-              {/* Actions */}
+              {/* Desktop Actions */}
               <div className="flex items-center gap-4">
-                {/* User Account */}
+                {/* User Menu */}
                 {isAuthenticated ? (
                   <div className="relative user-menu-container">
-                    <button 
+                    <button
                       onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                       className="flex items-center gap-2 p-2 hover:bg-accent rounded-lg transition-colors"
                     >
                       <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                         {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                       </div>
-                      <span className="hidden md:block text-sm font-medium">
-                        {profile?.full_name || 'User'}
-                      </span>
+                      <span className="text-sm font-medium">{profile?.full_name || 'User'}</span>
                     </button>
                     
-                    {/* Dropdown Menu */}
                     {isUserMenuOpen && (
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-background border rounded-lg shadow-lg z-50">
+                      <div className="absolute right-0 top-full mt-2 w-64 bg-background border rounded-lg shadow-lg z-50">
+                        <div className="p-4 border-b">
+                          <div className="font-medium">{profile?.full_name || 'User'}</div>
+                          <div className="text-sm text-muted-foreground">{profile?.email}</div>
+                        </div>
                         <div className="p-2">
                           <Link
                             href="/akun"
@@ -192,11 +178,8 @@ export default function Header() {
                           >
                             Riwayat Pesanan
                           </Link>
-                          <hr className="my-2" />
                           <button
-                            type="button"
                             onClick={() => {
-                              setIsUserMenuOpen(false);
                               handleLogout();
                             }}
                             className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
@@ -366,7 +349,7 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t bg-background">
+          <div className="md:hidden border-t bg-background max-h-[calc(100vh-80px)] overflow-y-auto">
             <div className="p-4 space-y-4">
               {/* Mobile Auth Section */}
               {isAuthenticated ? (
