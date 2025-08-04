@@ -349,31 +349,31 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t bg-background max-h-[calc(100vh-80px)] overflow-y-auto">
-            <div className="p-4 space-y-4">
+          <div className="md:hidden border-t bg-background max-h-[calc(100vh-120px)] overflow-y-auto">
+            <div className="p-3 space-y-3">
               {/* Mobile Auth Section */}
               {isAuthenticated ? (
-                <div className="border-b pb-4 mb-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-medium">
+                <div className="border-b pb-3 mb-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                       {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
                     </div>
                     <div>
-                      <div className="font-medium">{profile?.full_name || 'User'}</div>
-                      <div className="text-sm text-muted-foreground">{profile?.email}</div>
+                      <div className="text-sm font-medium">{profile?.full_name || 'User'}</div>
+                      <div className="text-xs text-muted-foreground">{profile?.email}</div>
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <Link
                       href="/akun"
-                      className="block text-sm hover:text-primary transition-colors"
+                      className="block text-xs hover:text-primary transition-colors py-1"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Akun Saya
                     </Link>
                     <Link
                       href="/akun/pesanan"
-                      className="block text-sm hover:text-primary transition-colors"
+                      className="block text-xs hover:text-primary transition-colors py-1"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Riwayat Pesanan
@@ -383,25 +383,25 @@ export default function Header() {
                         handleLogout();
                         setIsMenuOpen(false);
                       }}
-                      className="block text-sm text-red-600 hover:text-red-700 transition-colors"
+                      className="block text-xs text-red-600 hover:text-red-700 transition-colors py-1"
                     >
                       Keluar
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="border-b pb-4 mb-4">
-                  <div className="flex gap-4">
+                <div className="border-b pb-3 mb-3">
+                  <div className="flex gap-2">
                     <Link
                       href="/auth/login"
-                      className="flex-1 text-center py-2 border rounded-lg hover:bg-accent transition-colors"
+                      className="flex-1 text-center py-1.5 px-2 border rounded text-xs hover:bg-accent transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Masuk
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="flex-1 text-center py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                      className="flex-1 text-center py-1.5 px-2 bg-primary text-primary-foreground rounded text-xs hover:bg-primary/90 transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Daftar
@@ -414,17 +414,17 @@ export default function Header() {
                 <div key={key}>
                   <Link
                     href={`/kategori/${key}`}
-                    className="block text-lg font-medium py-2 hover:text-primary transition-colors"
+                    className="block text-sm font-medium py-1.5 hover:text-primary transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {category.name}
                   </Link>
-                  <div className="ml-4 space-y-1">
+                  <div className="ml-3 space-y-0.5">
                     {category.subcategories.map((sub) => (
                       <Link
                         key={sub}
                         href={`/kategori/${key}?subcategory=${encodeURIComponent(sub)}`}
-                        className="block text-sm text-muted-foreground py-1 hover:text-foreground transition-colors"
+                        className="block text-xs text-muted-foreground py-0.5 hover:text-foreground transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {sub}
