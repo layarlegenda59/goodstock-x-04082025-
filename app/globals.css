@@ -219,6 +219,10 @@
     @apply w-4 h-4 sm:w-5 sm:h-5;
   }
   
+  .icon-responsive-xs {
+    @apply w-4 h-4 sm:w-4 sm:h-4;
+  }
+  
   .icon-responsive-sm {
     @apply w-3.5 h-3.5 sm:w-4 sm:h-4;
   }

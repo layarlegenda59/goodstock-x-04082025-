@@ -75,13 +75,13 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Wishlist Button */}
           <button
             onClick={handleWishlistToggle}
-            className={`absolute top-1 sm:top-2 right-1 sm:right-2 p-1.5 sm:p-2 rounded-full transition-colors touch-target ${
+            className={`absolute top-2 sm:top-2 right-2 sm:right-2 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full transition-colors touch-target ${
               inWishlist
                 ? 'bg-red-100 text-red-600'
                 : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-600'
             }`}
           >
-            <Heart className={`icon-responsive-xs ${inWishlist ? 'fill-current' : ''}`} />
+            <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
           </button>
         </div>
 
