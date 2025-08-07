@@ -276,7 +276,7 @@ export default function ProductsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
-                        <Badge variant={product.stock > 0 ? "default" : "destructive"} className="text-responsive-xs">
+                        <Badge variant={product.stock > 0 ? "secondary" : "destructive"} className="text-responsive-xs">
                           {product.stock} units
                         </Badge>
                       </TableCell>
