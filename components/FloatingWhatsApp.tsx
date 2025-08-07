@@ -32,27 +32,21 @@ export default function FloatingWhatsApp({
         className={`
           fixed bottom-6 right-6 z-50
           w-14 h-14 md:w-16 md:h-16
-          bg-[#25D366] hover:bg-[#20BA5A]
-          rounded-full
-          flex items-center justify-center
-          shadow-lg hover:shadow-xl
           transition-all duration-300 ease-in-out
           transform hover:scale-110
-          focus:outline-none focus:ring-4 focus:ring-[#25D366]/30
+          focus:outline-none
           active:scale-95
           animate-float
         `}
         aria-label="Hubungi via WhatsApp"
         title="Chat dengan kami"
       >
-        {/* WhatsApp Icon */}
-        <MessageCircle 
-          className="w-7 h-7 md:w-8 md:h-8 text-white" 
-          fill="currentColor"
+        {/* WhatsApp Image */}
+        <img 
+          src="https://eldhtxtnwdanyavkikap.supabase.co/storage/v1/object/sign/material/whatsapp%20logo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85NmM4ZmI1NS0xODg0LTRkNjgtYTlhMS1kNWFlYjVjMTcyZjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC93aGF0c2FwcCBsb2dvLnBuZyIsImlhdCI6MTc1NDU4MTU2MSwiZXhwIjoxNzg2MTE3NTYxfQ.uJZNaCvLagEJMj9FqWJnLpW8pNtXjoS8lAyQC06OhCM"
+          alt="WhatsApp Logo"
+          className="w-14 h-14 md:w-16 md:h-16 object-contain"
         />
-        
-        {/* Ripple Effect on Click */}
-        <div className="absolute inset-0 rounded-full bg-white/20 scale-0 animate-ping opacity-0 pointer-events-none" />
       </button>
 
       {/* Optional Tooltip/Label */}

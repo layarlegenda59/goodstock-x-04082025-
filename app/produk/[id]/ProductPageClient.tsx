@@ -29,7 +29,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   const inWishlist = isInWishlist(product.id);
 
   // Use product images from Supabase
-  const productImages = [product.image];
+  const productImages = product.images || [product.image];
 
   // Helper functions for image handling
   const handleImageError = (index: number) => {

@@ -9,6 +9,7 @@ export interface Product {
   originalPrice?: number;
   discount?: number;
   image: string;
+  images?: string[];
   category: 'sepatu' | 'tas' | 'pakaian';
   subcategory: string;
   gender: 'pria' | 'wanita' | 'unisex';

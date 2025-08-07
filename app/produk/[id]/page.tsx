@@ -33,6 +33,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     originalPrice: product.originalPrice || undefined,
     discount: product.discount || undefined,
     image: product.images?.[0] || '/placeholder-image.svg',
+    images: product.images || ['/placeholder-image.svg'],
     category: (product.category as 'sepatu' | 'tas' | 'pakaian') || 'sepatu',
     subcategory: product.subcategory || '',
     brand: product.brand || '',
