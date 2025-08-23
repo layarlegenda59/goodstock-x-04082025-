@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
     networks:
       - goodstock-network
-    volumes:
+    volumes: []
       # Optional: Mount untuk development
       # - ./public:/app/public:ro
     healthcheck:
