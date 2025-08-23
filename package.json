@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "node deploy.js",
+    "deploy:dokploy": "node deploy-dokploy.js",
     "deploy:vercel": "npx vercel --prod",
+    "docker:build": "docker build -t goodstock-x .",
+    "docker:run": "docker run -p 3000:3000 --env-file .env.local goodstock-x",
+    "docker:compose": "docker-compose up --build",
+    "docker:compose:down": "docker-compose down",
     "type-check": "npx tsc --noEmit"
   },
   "dependencies": {
