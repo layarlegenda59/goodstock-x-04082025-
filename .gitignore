@@ -35,4 +35,21 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# deployment artifacts
+/deployment-package/
+/deployment-package.tar.gz
+/goodstock-x-*.tar.gz
+deploy-*.log
+
+# pm2 logs
+/logs/
+*.log
+
+# ssh keys and deployment configs
+/ssh-keys/
+.ssh/
+
+# temporary deployment files
+/tmp/
+/temp/
+start.sh
