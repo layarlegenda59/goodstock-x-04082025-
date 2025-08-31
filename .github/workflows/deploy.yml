@@ -1,0 +1,198 @@
+name: Deploy to VPS
+
+# Trigger deployment on push to main branch
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  deploy:
+    name: Deploy to Hostinger VPS
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js 18
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Verify Next.js configuration
+      run: |
+        echo "Checking next.config.js for standalone output..."
+        if grep -q "output.*standalone" next.config.js; then
+          echo "✅ Standalone output configured"
+        else
+          echo "❌ Warning: Standalone output may not be configured"
+        fi
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build application
+      run: |
+        echo "Building Next.js application..."
+        npm run build
+        
+        # Verify build artifacts
+        if [ ! -d ".next/standalone" ]; then
+          echo "❌ Error: Standalone build not found"
+          exit 1
+        fi
+        echo "✅ Build completed successfully"
+        
+    - name: Package deployment files
+      run: |
+        echo "Packaging deployment files..."
+        
+        # Create deployment directory
+        DEPLOY_DIR="deploy-$(date +%Y%m%d-%H%M%S)"
+        mkdir -p "$DEPLOY_DIR"
+        
+        # Copy required files
+        echo "Copying .next/standalone..."
+        cp -r .next/standalone/* "$DEPLOY_DIR/"
+        
+        echo "Copying .next/static..."
+        mkdir -p "$DEPLOY_DIR/.next"
+        cp -r .next/static "$DEPLOY_DIR/.next/"
+        
+        echo "Copying public directory..."
+        if [ -d "public" ]; then
+          cp -r public "$DEPLOY_DIR/"
+        fi
+        
+        echo "Copying configuration files..."
+        cp package.json "$DEPLOY_DIR/"
+        cp next.config.js "$DEPLOY_DIR/"
+        
+        # Create start script
+        cat > "$DEPLOY_DIR/start.sh" << 'EOF'
+        #!/bin/bash
+        echo "Starting Next.js application..."
+        node server.js
+        EOF
+        chmod +x "$DEPLOY_DIR/start.sh"
+        
+        echo "DEPLOY_DIR=$DEPLOY_DIR" >> $GITHUB_ENV
+        echo "✅ Files packaged successfully"
+        
+    - name: Setup SSH key
+      run: |
+        echo "Setting up SSH key..."
+        mkdir -p ~/.ssh
+        echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        
+        # Add VPS to known hosts
+        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+        
+    - name: Test SSH connection
+      run: |
+        echo "Testing SSH connection..."
+        ssh -o ConnectTimeout=10 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo 'SSH connection successful'"
+        
+    - name: Deploy to VPS
+      env:
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_PATH: ${{ secrets.VPS_PATH }}
+      run: |
+        echo "Deploying to VPS..."
+        
+        # Create target directory on VPS
+        echo "Creating target directory..."
+        ssh $VPS_USER@$VPS_HOST "mkdir -p $VPS_PATH"
+        
+        # Backup existing deployment
+        echo "Creating backup..."
+        ssh $VPS_USER@$VPS_HOST "if [ -d '$VPS_PATH/current' ]; then mv '$VPS_PATH/current' '$VPS_PATH/backup-$(date +%Y%m%d-%H%M%S)'; fi"
+        
+        # Upload files using rsync
+        echo "Uploading files..."
+        rsync -avz --delete "$DEPLOY_DIR/" "$VPS_USER@$VPS_HOST:$VPS_PATH/current/"
+        
+        echo "✅ Files uploaded successfully"
+        
+    - name: Install production dependencies
+      env:
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_PATH: ${{ secrets.VPS_PATH }}
+      run: |
+        echo "Installing production dependencies on VPS..."
+        ssh $VPS_USER@$VPS_HOST << 'EOF'
+        cd ${{ secrets.VPS_PATH }}/current
+        echo "Installing dependencies..."
+        npm install --production --silent
+        echo "✅ Production dependencies installed"
+        EOF
+        
+    - name: Restart application with PM2
+      env:
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        VPS_PATH: ${{ secrets.VPS_PATH }}
+      run: |
+        echo "Restarting application with PM2..."
+        ssh $VPS_USER@$VPS_HOST << 'EOF'
+        cd ${{ secrets.VPS_PATH }}/current
+        
+        # Check if PM2 is installed
+        if ! command -v pm2 &> /dev/null; then
+          echo "Installing PM2..."
+          npm install -g pm2
+        fi
+        
+        # Restart or start application
+        if pm2 describe goodstock-x > /dev/null 2>&1; then
+          echo "Restarting existing PM2 process..."
+          pm2 restart goodstock-x
+        else
+          echo "Starting new PM2 process..."
+          pm2 start server.js --name goodstock-x
+        fi
+        
+        # Save PM2 configuration
+        pm2 save
+        
+        # Show status
+        echo "PM2 Status:"
+        pm2 status
+        EOF
+        
+    - name: Deployment summary
+      if: success()
+      run: |
+        echo "🎉 Deployment completed successfully!"
+        echo "==========================================="
+        echo "✅ Application built in standalone mode"
+        echo "✅ Files uploaded to VPS"
+        echo "✅ Production dependencies installed"
+        echo "✅ Application restarted with PM2"
+        echo "==========================================="
+        echo "Your application should now be running on the VPS"
+        
+    - name: Cleanup
+      if: always()
+      run: |
+        echo "Cleaning up deployment files..."
+        if [ -n "$DEPLOY_DIR" ] && [ -d "$DEPLOY_DIR" ]; then
+          rm -rf "$DEPLOY_DIR"
+          echo "✅ Cleanup completed"
+        fi
+        
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ Deployment failed!"
+        echo "Please check the logs above for error details."
+        echo "Common issues:"
+        echo "- SSH key not configured properly"
+        echo "- VPS credentials incorrect"
+        echo "- Build process failed"
+        echo "- Network connectivity issues"

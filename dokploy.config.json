@@ -1,0 +1,30 @@
+{
+  "name": "goodstock-x",
+  "type": "application",
+  "sourceType": "github",
+  "repository": "https://github.com/layarlegenda59/goodstock-x-04082025-.git",
+  "branch": "main",
+  "buildType": "dockerfile",
+  "dockerfile": "Dockerfile",
+  "port": 3000,
+  "environment": {
+    "NODE_ENV": "production",
+    "PORT": "3000",
+    "HOSTNAME": "0.0.0.0"
+  },
+  "healthCheck": {
+    "enabled": true,
+    "path": "/",
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3
+  },
+  "resources": {
+    "memory": "512Mi",
+    "cpu": "0.5"
+  },
+  "scaling": {
+    "replicas": 1,
+    "maxReplicas": 3
+  }
+}
