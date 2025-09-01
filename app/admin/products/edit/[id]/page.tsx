@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -98,9 +98,9 @@ export default function EditProductPage({ params }: EditProductPageProps) {
 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
+  }, [id, fetchProduct]);
 
-  const fetchProduct = async () => {
+  const fetchProduct = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('products')
@@ -137,7 +137,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     } finally {
       setFetchLoading(false);
     }
-  };
+  }, [id, form, router]);
 
   const onSubmit = async (data: ProductFormData) => {
     if (images.length === 0) {
@@ -228,7 +228,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
         </div>
         <Card className="card-responsive">
           <CardContent className="p-responsive text-center">
-            <p className="text-muted-foreground text-responsive-sm">The product you're looking for doesn't exist.</p>
+            <p className="text-muted-foreground text-responsive-sm">The product you&apos;re looking for doesn&apos;t exist.</p>
           </CardContent>
         </Card>
       </div>

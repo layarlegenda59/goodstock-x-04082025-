@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface ImageUploadProps {
   images: string[];
@@ -116,9 +117,11 @@ export default function ImageUpload({
         <div className="grid grid-cols-2 gap-4">
           {images.map((image, index) => (
             <div key={index} className="relative group">
-              <img
+              <Image
                 src={image}
                 alt={`Product ${index + 1}`}
+                width={200}
+                height={128}
                 className="w-full h-32 object-cover rounded-lg border"
               />
               <Button

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { signIn, supabase } from '@/lib/supabase';
 import { useAdminAuthStore } from '@/store/admin-auth';
 import { Button } from '@/components/ui/button';
@@ -80,11 +81,8 @@ export default function AdminLoginPage() {
           setAdminProfile(profile);
           toast.success('Login admin berhasil!');
           
-          // Wait a bit for state to update before redirect
-          await new Promise(resolve => setTimeout(resolve, 50));
-          
-          // Redirect to admin dashboard
-          router.push('/admin/dashboard');
+          // Redirect to admin dashboard immediately
+          router.replace('/admin/dashboard');
         } else {
           setError('Akses ditolak. Anda bukan admin.');
           await supabase.auth.signOut();
@@ -105,9 +103,12 @@ export default function AdminLoginPage() {
       <Card className="w-full max-w-md card-responsive">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <img 
+            <Image 
               src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
               alt="Goodstock-X"
+              width={150}
+              height={48}
+              style={{ width: 'auto', height: 'auto' }}
               className="h-10 sm:h-12 w-auto"
             />
           </div>

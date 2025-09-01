@@ -184,7 +184,7 @@ export default function SearchPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
             <div>
               <h1 className="text-responsive-2xl font-bold">
-                Hasil pencarian: "{query}"
+                Hasil pencarian: &quot;{query}&quot;
               </h1>
               <p className="text-muted-foreground mt-1 text-responsive-sm">
                 {searchResults.length} produk ditemukan
@@ -238,7 +238,7 @@ export default function SearchPage() {
               <Search className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-responsive-lg font-medium mb-2">Tidak ada hasil ditemukan</h3>
               <p className="text-muted-foreground mb-6 text-responsive-sm">
-                Maaf, tidak ada produk yang cocok dengan pencarian "<strong>{query}</strong>"
+                Maaf, tidak ada produk yang cocok dengan pencarian &quot;<strong>{query}</strong>&quot;
               </p>
               <div className="space-y-2 text-responsive-sm text-muted-foreground">
                 <p>Saran:</p>

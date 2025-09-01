@@ -12,6 +12,7 @@ export default function CartSummary() {
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
+    const totalItems = getTotalItems();
     if (items.length > 0) {
       setIsVisible(true);
       setShouldRender(true);
@@ -25,7 +26,7 @@ export default function CartSummary() {
 
       return () => clearTimeout(timer);
     }
-  }, [items.length, getTotalItems()]);
+  }, [items.length, getTotalItems]);
 
   if (items.length === 0 || !shouldRender) return null;
 

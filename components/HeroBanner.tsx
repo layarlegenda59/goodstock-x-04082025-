@@ -66,23 +66,28 @@ export default function HeroBanner() {
 
       if (error) {
         console.error('Error fetching slides:', error);
-        setSlides(fallbackBannerData);
+        return fallbackBannerData;
       } else if (data && data.length > 0) {
-        setSlides(data);
+        return data;
       } else {
         // Jika tidak ada data di database, gunakan fallback
-        setSlides(fallbackBannerData);
+        return fallbackBannerData;
       }
     } catch (error) {
       console.error('Error fetching slides:', error);
-      setSlides(fallbackBannerData);
-    } finally {
-      setLoading(false);
+      return fallbackBannerData;
     }
   };
 
   useEffect(() => {
-    fetchSlides();
+    const loadSlides = async () => {
+      setLoading(true);
+      const slidesData = await fetchSlides();
+      setSlides(slidesData);
+      setLoading(false);
+    };
+    
+    loadSlides();
   }, []);
 
   useEffect(() => {
@@ -135,6 +140,20 @@ export default function HeroBanner() {
               alt={banner.title}
               fill
               className="object-cover"
+              onError={(e) => {
+                console.error('Failed to load hero slide image:', banner.image_url);
+                // Fallback to reliable external image
+                const target = e.target as HTMLImageElement;
+                const fallbackImages = [
+                  'https://images.pexels.com/photos/1182825/pexels-photo-1182825.jpeg',
+                  'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg',
+                  'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg'
+                ];
+                const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+                target.src = randomFallback;
+              }}
+              unoptimized={banner.image_url?.includes('supabase.co/storage')}
+              priority={index === 0}
             />
             <div className="absolute inset-0 bg-black/40" />
             
