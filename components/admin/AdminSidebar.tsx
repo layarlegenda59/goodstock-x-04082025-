@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAdminAuthStore } from '@/store/admin-auth';
 import { signOut } from '@/lib/supabase';
@@ -61,9 +62,12 @@ export default function AdminSidebar() {
           {/* Logo */}
           <div className="flex items-center justify-between p-responsive border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">
-              <img 
+              <Image 
                 src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
                 alt="Goodstock-X"
+                width={100}
+                height={24}
+                style={{ width: 'auto', height: 'auto' }}
                 className="h-6 w-auto"
               />
               <span className="text-responsive-sm font-medium text-gray-600 dark:text-gray-400">Admin</span>

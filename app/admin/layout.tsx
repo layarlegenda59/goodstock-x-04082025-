@@ -29,10 +29,8 @@ export default function AdminLayout({
           router.push('/admin/login');
         }
       } else if (adminProfile.role === 'admin' && pathname === '/admin/login') {
-        // Admin is on login page, redirect to dashboard with delay to prevent race condition
-        setTimeout(() => {
-          router.push('/admin/dashboard');
-        }, 200);
+        // Admin is on login page, redirect to dashboard immediately
+        router.replace('/admin/dashboard');
       }
     }
   }, [isAdminLoading, adminUser, adminProfile, pathname, router]);

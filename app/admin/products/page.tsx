@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,7 +65,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     filterProducts();
-  }, [products, searchQuery, categoryFilter, promoFilter]);
+  }, [products, searchQuery, categoryFilter, promoFilter, filterProducts]);
 
   const fetchProducts = async () => {
     try {
@@ -84,7 +84,7 @@ export default function ProductsPage() {
     }
   };
 
-  const filterProducts = () => {
+  const filterProducts = useCallback(() => {
     let filtered = products;
 
     // Search filter
@@ -108,7 +108,7 @@ export default function ProductsPage() {
     }
 
     setFilteredProducts(filtered);
-  };
+  }, [products, searchQuery, categoryFilter, promoFilter]);
 
   const handleDeleteProduct = async (productId: string) => {
     try {

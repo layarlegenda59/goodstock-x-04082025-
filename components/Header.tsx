@@ -4,6 +4,7 @@ import { Search, Heart, Moon, Sun, Menu, X, ShoppingCart, User } from 'lucide-re
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useWishlistStore } from '@/store/wishlist';
 import { useCartStore } from '@/store/cart';
@@ -89,16 +90,18 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-[70] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <header className="sticky top-0 z-[70] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b prevent-layout-shift">
         {/* Desktop Header */}
         <div className="hidden md:block">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between gap-8">
               {/* Logo */}
               <Link href="/" className="flex items-center">
-                <img 
+                <Image 
                   src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
                   alt="Goodstock-X"
+                  width={200}
+                  height={56}
                   className="h-14 w-auto max-w-[200px]"
                 />
               </Link>
@@ -275,9 +278,13 @@ export default function Header() {
             </button>
 
             <Link href="/" className="flex-1 flex justify-center">
-              <img 
+              <Image 
                 src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
                 alt="Goodstock-X"
+                width={168}
+                height={48}
+                priority
+                style={{ width: 'auto', height: 'auto' }}
                 className="h-10 w-auto sm:h-12 max-w-[144px] sm:max-w-[168px]"
               />
             </Link>

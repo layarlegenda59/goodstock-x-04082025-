@@ -76,8 +76,30 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    /* Prevent flash of unstyled content */
+    visibility: visible;
+    opacity: 1;
+  }
+  
   body {
     @apply bg-background text-foreground;
+    /* Ensure consistent rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Prevent layout shifts */
+    overflow-x: hidden;
+  }
+  
+  /* Prevent hydration mismatches */
+  [data-theme] {
+    color-scheme: light;
+  }
+  
+  [data-theme="dark"] {
+    color-scheme: dark;
   }
 }
 
@@ -132,6 +154,25 @@
 @media (max-width: 768px) {
   .mobile-menu-open .search-suggestions {
     display: none;
+  }
+}
+
+/* Prevent layout shifts and ensure consistent rendering */
+.prevent-layout-shift {
+  contain: layout style;
+}
+
+.stable-layout {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* Fix for iframe/preview rendering issues */
+@media screen and (max-width: 1024px) {
+  body {
+    zoom: 1;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
   }
 }
 

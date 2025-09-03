@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,20 +58,29 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
   const [saving, setSaving] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryImage | null>(null);
+  const [hasNetworkError, setHasNetworkError] = useState(false);
+  const [retryAttempts, setRetryAttempts] = useState(0);
   
   const [formData, setFormData] = useState({
     image: null as File | null
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Cleanup timeouts on unmount
   useEffect(() => {
-    fetchCategoryImages();
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+    };
   }, []);
 
-  const fetchCategoryImages = async () => {
+  const fetchCategoryImages = useCallback(async (retryCount = 0) => {
     try {
       setLoading(true);
+      
       const { data, error } = await supabase
         .from('category_images')
         .select('*')
@@ -87,15 +96,46 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
       
       setCategoryImages(data);
       onImagesChange?.(data);
+      
+      // Reset error states on successful fetch
+      setHasNetworkError(false);
+      setRetryAttempts(0);
     } catch (error) {
       console.error('Error fetching category images:', error);
-      toast.error('Gagal memuat data gambar kategori');
+      
+      // Check if it's a network-related error
+      const isNetworkError = error.name === 'AbortError' || error.message?.includes('fetch') || error.message?.includes('QUIC') || error.message?.includes('Failed to fetch');
+      
+      // Retry logic for network errors
+      if (retryCount < 2 && isNetworkError) {
+        console.log(`Retrying fetch category images (attempt ${retryCount + 1})...`);
+        setTimeout(() => fetchCategoryImages(retryCount + 1), 1000 * (retryCount + 1)); // Exponential backoff
+        return;
+      }
+      
+      // Set network error state for auto-retry mechanism
+      if (isNetworkError && retryCount >= 2) {
+        setHasNetworkError(true);
+      }
+      
+      // Fallback to empty array with user-friendly message
+      setCategoryImages([]);
+      onImagesChange?.([]);
+      
+      // Show user-friendly error message
+      if (error.name === 'AbortError') {
+        toast.error('Koneksi timeout. Akan mencoba lagi otomatis.');
+      } else if (isNetworkError) {
+        toast.error('Masalah koneksi jaringan. Sistem akan mencoba memuat ulang otomatis.');
+      } else {
+        toast.error('Gagal memuat data gambar kategori. Silakan refresh halaman.');
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [onImagesChange]);
 
-  const initializeDefaultImages = async () => {
+  const initializeDefaultImages = useCallback(async () => {
     try {
       const defaultImages = {
         sepatu: 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg',
@@ -124,7 +164,31 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
       console.error('Error initializing default images:', error);
       toast.error('Gagal menginisialisasi data kategori');
     }
-  };
+  }, [onImagesChange]);
+
+  // Initial fetch on component mount
+  useEffect(() => {
+    fetchCategoryImages();
+  }, [fetchCategoryImages]);
+
+  // Auto-retry mechanism for network errors
+  useEffect(() => {
+    if (hasNetworkError && retryAttempts < 3) {
+      const delay = Math.pow(2, retryAttempts) * 1000; // Exponential backoff: 1s, 2s, 4s
+      
+      retryTimeoutRef.current = setTimeout(() => {
+        console.log(`Auto-retry attempt ${retryAttempts + 1} for category images...`);
+        setRetryAttempts(prev => prev + 1);
+        fetchCategoryImages();
+      }, delay);
+    }
+
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+    };
+  }, [hasNetworkError, retryAttempts, fetchCategoryImages]);
 
   // Fungsi untuk mengkonversi gambar ke rasio optimal (4:3 atau 3:2)
   const processImageToOptimalRatio = (file: File): Promise<File> => {
@@ -421,6 +485,31 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
     }
   };
 
+  // Initial fetch and dependency on fetchCategoryImages
+  useEffect(() => {
+    fetchCategoryImages();
+  }, [fetchCategoryImages]);
+
+  // Auto-retry mechanism for network errors
+  useEffect(() => {
+    if (hasNetworkError && retryAttempts < 3) {
+      const retryDelay = Math.min(5000 * Math.pow(2, retryAttempts), 30000); // Max 30 seconds
+      console.log(`Auto-retry scheduled for category images in ${retryDelay/1000} seconds (attempt ${retryAttempts + 1})`);
+      
+      retryTimeoutRef.current = setTimeout(() => {
+        console.log('Auto-retrying to fetch category images...');
+        setRetryAttempts(prev => prev + 1);
+        fetchCategoryImages(0); // Reset retry count for fetchCategoryImages
+      }, retryDelay);
+      
+      return () => {
+        if (retryTimeoutRef.current) {
+          clearTimeout(retryTimeoutRef.current);
+        }
+      };
+    }
+  }, [hasNetworkError, retryAttempts, fetchCategoryImages]);
+
   if (loading) {
     return (
       <Card>
@@ -447,7 +536,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
           Kelola Gambar Kategori Populer
         </CardTitle>
         <CardDescription>
-          Ubah gambar yang ditampilkan pada section "Kategori Populer"
+          Ubah gambar yang ditampilkan pada section &quot;Kategori Populer&quot;
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -518,7 +607,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
                           <AlertDialogHeader>
                             <AlertDialogTitle>Reset ke Gambar Default</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Apakah Anda yakin ingin mereset gambar kategori "{categoryImage.category_name}" 
+                              Apakah Anda yakin ingin mereset gambar kategori &quot;{categoryImage.category_name}&quot; 
                               ke gambar default? Gambar saat ini akan diganti.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
@@ -547,7 +636,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
             <DialogHeader>
               <DialogTitle>Edit Gambar Kategori</DialogTitle>
               <DialogDescription>
-                Perbarui gambar untuk kategori "{editingCategory?.category_name}"
+                Perbarui gambar untuk kategori &quot;{editingCategory?.category_name}&quot;
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">

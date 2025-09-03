@@ -66,7 +66,7 @@ export default function HeroBanner() {
 
       if (error) {
         console.error('Error fetching slides:', error);
-        setSlides(fallbackBannerData);
+        return fallbackBannerData;
       } else if (data && data.length > 0) {
         // Use slides data as-is from database
         // Let the Image component handle loading errors with onError handler
@@ -76,18 +76,23 @@ export default function HeroBanner() {
         })));
       } else {
         // Jika tidak ada data di database, gunakan fallback
-        setSlides(fallbackBannerData);
+        return fallbackBannerData;
       }
     } catch (error) {
       console.error('Error fetching slides:', error);
-      setSlides(fallbackBannerData);
-    } finally {
-      setLoading(false);
+      return fallbackBannerData;
     }
   };
 
   useEffect(() => {
-    fetchSlides();
+    const loadSlides = async () => {
+      setLoading(true);
+      const slidesData = await fetchSlides();
+      setSlides(slidesData);
+      setLoading(false);
+    };
+    
+    loadSlides();
   }, []);
 
   useEffect(() => {

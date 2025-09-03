@@ -38,30 +38,64 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       // Get total products
-      const { count: totalProducts } = await supabase
+      const { count: totalProducts, error: totalError } = await supabase
         .from('products')
         .select('*', { count: 'exact', head: true });
 
-      // Get promo products
-      const { count: promoProducts } = await supabase
-        .from('products')
-        .select('*', { count: 'exact', head: true })
-        .eq('promo', true);
+      if (totalError) {
+        console.error('Error fetching total products:', totalError);
+      }
+
+      // Get promo products with error handling
+      let promoProducts = 0;
+      try {
+        const { count, error: promoError } = await supabase
+          .from('products')
+          .select('*', { count: 'exact', head: true })
+          .eq('promo', true);
+        
+        if (promoError) {
+          console.error('Error fetching promo products:', promoError);
+          // Fallback: manually count promo products
+          const { data: allProducts, error: allError } = await supabase
+            .from('products')
+            .select('promo');
+          
+          if (!allError && allProducts) {
+            promoProducts = allProducts.filter(p => p.promo === true).length;
+          }
+        } else {
+          promoProducts = count || 0;
+        }
+      } catch (promoErr) {
+        console.error('Promo products query failed:', promoErr);
+        promoProducts = 0;
+      }
 
       // Get recent products
-      const { data: recentProducts } = await supabase
+      const { data: recentProducts, error: recentError } = await supabase
         .from('products')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(5);
 
+      if (recentError) {
+        console.error('Error fetching recent products:', recentError);
+      }
+
       setStats({
         totalProducts: totalProducts || 0,
-        promoProducts: promoProducts || 0,
+        promoProducts: promoProducts,
         recentProducts: recentProducts || []
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      // Set fallback data
+      setStats({
+        totalProducts: 0,
+        promoProducts: 0,
+        recentProducts: []
+      });
     } finally {
       setLoading(false);
     }

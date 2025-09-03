@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   description: 'Temukan koleksi sepatu, tas, dan pakaian premium terbaik di Goodstock-X',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -24,16 +31,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={inter.className}>
+      <head>
+        <meta name="theme-color" content="#ffffff" />
+      </head>
+      <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem
+          enableSystem={false}
           disableTransitionOnChange
+          storageKey="goodstock-theme"
         >
           <LanguageProvider>
             <AuthProvider>
-              <div className="min-h-screen bg-background">
+              <div className="min-h-screen bg-background" suppressHydrationWarning>
                 <Header />
                 <main className="pb-20 md:pb-0">
                   {children}

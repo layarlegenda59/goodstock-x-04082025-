@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, clearInvalidSession } from '@/lib/supabase';
 import { useAuthStore } from '@/store/auth';
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const { setUser, setProfile, setLoading } = useAuthStore();
+  const [isInitialized, setIsInitialized] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -39,11 +40,13 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
           setProfile(null);
         }
         setLoading(false);
+        setIsInitialized(true);
       } catch (error) {
         console.error('Error getting initial session:', error);
         setUser(null);
         setProfile(null);
         setLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -152,6 +155,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     return () => subscription.unsubscribe();
   }, [setUser, setProfile, setLoading, router]);
+
+  // Prevent hydration mismatch by waiting for initialization
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }
