@@ -68,7 +68,12 @@ export default function HeroBanner() {
         console.error('Error fetching slides:', error);
         setSlides(fallbackBannerData);
       } else if (data && data.length > 0) {
-        setSlides(data);
+        // Use slides data as-is from database
+        // Let the Image component handle loading errors with onError handler
+        setSlides(data.map(slide => ({
+          ...slide,
+          image_url: slide.image_url
+        })));
       } else {
         // Jika tidak ada data di database, gunakan fallback
         setSlides(fallbackBannerData);
@@ -135,6 +140,12 @@ export default function HeroBanner() {
               alt={banner.title}
               fill
               className="object-cover"
+              unoptimized
+              onError={(e) => {
+                console.log('Image load error:', banner.image_url);
+                // Fallback to a simple placeholder
+                e.currentTarget.src = '/placeholder-image.svg';
+              }}
             />
             <div className="absolute inset-0 bg-black/40" />
             

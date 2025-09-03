@@ -47,10 +47,11 @@ interface HeroSlide {
   id: string;
   title: string;
   subtitle: string;
-  image: string;
-  cta: string;
-  link: string;
-  order: number;
+  image_url: string;
+  cta_text: string;
+  cta_link: string;
+  order_index: number;
+  is_active?: boolean;
 }
 
 interface HeroSlideManagerProps {
@@ -113,15 +114,25 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
       if (error) throw error;
       
       // Map database fields to component interface
-      const mappedData = data?.map(slide => ({
-        id: slide.id,
-        title: slide.title,
-        subtitle: slide.subtitle || '',
-        image: slide.image_url,
-        cta: slide.cta_text || 'Shop Now',
-        link: slide.cta_link || '/',
-        order: slide.order_index
-      })) || [];
+      const mappedData = data?.map(slide => {
+        // Keep the original image URL from database
+        // Only use fallback for old problematic URLs, not new uploads
+        let imageUrl = slide.image_url;
+        
+        // Keep the original image URL from database
+         // Let the Image component handle loading errors with onError handler
+        
+        return {
+          id: slide.id,
+          title: slide.title,
+          subtitle: slide.subtitle || '',
+          image_url: imageUrl,
+          cta_text: slide.cta_text || 'Shop Now',
+          cta_link: slide.cta_link || '/',
+          order_index: slide.order_index,
+          is_active: slide.is_active
+        };
+      }) || [];
       
       setSlides(mappedData);
       onSlidesChange?.(mappedData);
@@ -133,9 +144,9 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     }
   };
 
-  const handleImageSelect = useCallback((file: File) => {
-    // Handle empty file (when image is removed)
-    if (file.size === 0) {
+  const handleImageSelect = useCallback((file: File | null) => {
+    // Handle null or empty file (when image is removed)
+    if (!file || file.size === 0) {
       setFormData(prev => ({ ...prev, image: null }));
       setImagePreview(null);
       return;
@@ -143,10 +154,12 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     
     setFormData(prev => ({ ...prev, image: file }));
     
-    // Preview
+    // Create preview using FileReader for immediate display
     const reader = new FileReader();
     reader.onload = (e) => {
-      setImagePreview(e.target?.result as string);
+      const result = e.target?.result as string;
+      setImagePreview(result);
+      console.log('Image preview set from FileReader');
     };
     reader.readAsDataURL(file);
   }, []);
@@ -167,41 +180,58 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
 
       console.log('Processing image file:', { fileName: file.name, fileSize: file.size, fileType: file.type });
 
-      // Upload to Supabase Storage bucket 'material'
+      // Upload to Supabase Storage bucket 'hero_slides'
       const fileExt = file.name.split('.').pop();
       const fileName = `hero-slide-${Date.now()}.${fileExt}`;
-      const filePath = `hero-slides/${fileName}`;
+      const filePath = `${fileName}`; // Direct file path without subfolder
 
-      console.log('Uploading to Supabase Storage:', filePath);
+      console.log('Uploading to Supabase Storage bucket hero_slides:', filePath);
       
-      const { error: uploadError } = await supabase.storage
-        .from('material')
-        .upload(filePath, file, {
-          onUploadProgress: (progress) => {
-            const percentage = (progress.loaded / progress.total) * 100;
-            setUploadProgress(percentage);
-            console.log(`Upload progress: ${percentage.toFixed(1)}%`);
-          }
-        });
+      try {
+        const { error: uploadError } = await supabase.storage
+          .from('hero_slides')
+          .upload(filePath, file, {
+            onUploadProgress: (progress) => {
+              const percentage = (progress.loaded / progress.total) * 100;
+              setUploadProgress(percentage);
+              console.log(`Upload progress: ${percentage.toFixed(1)}%`);
+            }
+          });
 
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw new Error(`Gagal upload gambar: ${uploadError.message}`);
+        if (uploadError) {
+          console.warn('Supabase upload failed, using base64 fallback:', uploadError.message);
+          // Fallback to base64 if Supabase fails
+          return await convertFileToBase64(file);
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('hero_slides')
+          .getPublicUrl(filePath);
+
+        console.log('Image uploaded successfully:', publicUrl);
+        setUploadProgress(100);
+        return publicUrl;
+      } catch (supabaseError) {
+        console.warn('Supabase storage not available, using base64 fallback:', supabaseError);
+        // Fallback to base64 if Supabase is not available
+        return await convertFileToBase64(file);
       }
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('material')
-        .getPublicUrl(filePath);
-
-      console.log('Image uploaded successfully:', publicUrl);
-      setUploadProgress(100);
-      return publicUrl;
     } catch (error) {
       console.error('Error in uploadImageToSupabase:', error);
       setUploadProgress(0);
       throw error;
     }
+  };
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+      setUploadProgress(100);
+    });
   };
 
   const handleAddSlide = async () => {
@@ -275,13 +305,17 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     try {
       setSaving(true);
       
-      let imageUrl = editingSlide.image;
+      let imageUrl = editingSlide.image_url;
       
       if (formData.image) {
         setUploadProgress(0);
         console.log('Updating slide with new image...');
         imageUrl = await uploadImageToSupabase(formData.image);
         console.log('New image uploaded successfully:', imageUrl);
+        
+        // Keep the current preview (base64) for immediate display
+        // The new URL will be used in the database and fetched later
+        console.log('Keeping current preview for immediate display');
       }
       
       const updatedSlide = {
@@ -306,11 +340,31 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
       }
 
       console.log('Slide updated successfully:', data);
+      
+      // Update optimistic slides immediately for better UX
+      if (formData.image && data?.[0]) {
+        // Use the base64 preview for immediate display since Supabase URLs might fail
+        const displayUrl = imagePreview.startsWith('data:') ? imagePreview : imageUrl;
+        
+        setOptimisticSlides(prev => 
+          prev.map(s => s.id === editingSlide.id ? { ...s, image_url: displayUrl } : s)
+        );
+        setSlides(prev => 
+          prev.map(s => s.id === editingSlide.id ? { ...s, image_url: displayUrl } : s)
+        );
+        // Keep the base64 preview for immediate display
+        setEditingSlide(prev => prev ? { ...prev, image_url: displayUrl } : null);
+      }
+      
       toast.success('Slide berhasil diperbarui');
       setIsEditDialogOpen(false);
       setEditingSlide(null);
       resetForm();
-      fetchSlides();
+      
+      // Fetch slides to ensure data consistency
+      setTimeout(() => {
+        fetchSlides();
+      }, 500);
     } catch (error: any) {
       console.error('Error updating slide:', error);
       const errorMessage = error?.message || 'Gagal memperbarui slide';
@@ -354,14 +408,19 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     try {
       const updates = newSlides.map((slide, index) => ({
         id: slide.id,
-        order: index
+        order_index: index
       }));
 
       for (const update of updates) {
-        await supabase
+        const { error } = await supabase
           .from('hero_slides')
-          .update({ order_index: update.order })
+          .update({ order_index: update.order_index })
           .eq('id', update.id);
+
+        if (error) {
+          console.error('Error updating slide order:', error);
+          throw error;
+        }
       }
 
       setSlides(newSlides);
@@ -370,6 +429,8 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     } catch (error) {
       console.error('Error reordering slides:', error);
       toast.error('Gagal mengubah urutan slide');
+      // Revert optimistic update
+      fetchSlides();
     }
   };
 
@@ -457,11 +518,12 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     setFormData({
       title: slide.title,
       subtitle: slide.subtitle,
-      cta: slide.cta,
-      link: slide.link,
+      cta: slide.cta_text,
+      link: slide.cta_link,
       image: null
     });
-    setImagePreview(slide.image);
+    // Set image preview, but let DragDropImage handle loading errors with onError fallback
+    setImagePreview(slide.image_url);
     setIsEditDialogOpen(true);
   }, []);
 
@@ -481,10 +543,17 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
           </div>
           <div className="relative w-24 h-16 rounded overflow-hidden flex-shrink-0">
             <Image
-              src={slide.image}
+              src={slide.image_url}
               alt={slide.title}
               fill
               className="object-cover"
+              onError={(e) => {
+                console.log('Slide thumbnail load error:', slide.image_url);
+                const target = e.currentTarget;
+                if (target.src !== '/placeholder-image.svg') {
+                  target.src = '/placeholder-image.svg';
+                }
+              }}
             />
           </div>
           <div className="flex-1 min-w-0">
@@ -492,10 +561,10 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
             <p className="text-sm text-muted-foreground truncate">{slide.subtitle}</p>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                {slide.cta}
+                {slide.cta_text}
               </span>
               <span className="text-xs text-muted-foreground">
-                → {slide.link}
+                → {slide.cta_link}
               </span>
             </div>
           </div>

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface DragDropImageProps {
-  onImageSelect: (file: File) => void;
+  onImageSelect: (file: File | null) => void;
   currentImage?: string;
   className?: string;
   maxSize?: number; // in MB
@@ -200,9 +200,8 @@ export default function DragDropImage({
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-    // Create empty file to notify parent component about removal
-    const emptyFile = new File([], '', { type: 'image/jpeg' });
-    onImageSelect(emptyFile);
+    // Notify parent component about removal
+    onImageSelect(null);
   }, [onImageSelect]);
 
   const containerClasses = useMemo(() => cn(
@@ -243,6 +242,15 @@ export default function DragDropImage({
               className="object-cover"
               priority={false}
               loading="lazy"
+              unoptimized
+              onError={(e) => {
+                console.log('Preview image load error:', preview);
+                // Fallback to placeholder
+                const target = e.currentTarget;
+                if (target.src !== '/placeholder-image.svg') {
+                  target.src = '/placeholder-image.svg';
+                }
+              }}
             />
             {isProcessing && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
