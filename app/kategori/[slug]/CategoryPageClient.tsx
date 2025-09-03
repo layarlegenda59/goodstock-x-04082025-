@@ -72,7 +72,7 @@ export default function CategoryPageClient({ params, searchParams }: CategoryPag
       }));
       
       setProducts(transformedProducts);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching products:', error);
       setProducts([]);
     } finally {

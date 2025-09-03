@@ -77,7 +77,7 @@ export default function AdminLayout({
               } else {
                 userProfile = profileData;
               }
-            } catch (err) {
+            } catch (err: any) {
               console.error('Profile fetch attempt failed:', err);
             }
             
@@ -103,7 +103,7 @@ export default function AdminLayout({
             router.push('/admin/login');
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error in getSession:', error);
         if (pathname !== '/admin/login') {
           router.push('/admin/login');
@@ -149,7 +149,7 @@ export default function AdminLayout({
                 if (!error && profileData) {
                   userProfile = profileData;
                 }
-              } catch (err) {
+              } catch (err: any) {
                 console.error('Profile fetch in auth change failed:', err);
               }
               
@@ -174,7 +174,7 @@ export default function AdminLayout({
               router.push('/admin/login');
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error in admin auth state change:', error);
           // On error, clear session and redirect to login
           setAdminUser(null);

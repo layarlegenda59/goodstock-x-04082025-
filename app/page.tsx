@@ -26,8 +26,7 @@ export default function HomePage() {
         .from('products')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(8)
-        .abortSignal(controller.signal);
+        .limit(8); // Fixed: Removed invalid abortSignal method
 
       clearTimeout(timeoutId);
 
@@ -56,11 +55,11 @@ export default function HomePage() {
       // Reset error states on successful fetch
       setHasNetworkError(false);
       setRetryAttempts(0);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching featured products:', error);
       
       // Check if it's a network-related error
-      const isNetworkError = error.name === 'AbortError' || error.message?.includes('fetch') || error.message?.includes('QUIC') || error.message?.includes('Failed to fetch') || error.message?.includes('ERR_ABORTED');
+      const isNetworkError = error?.name === 'AbortError' || error?.message?.includes('fetch') || error?.message?.includes('QUIC') || error?.message?.includes('Failed to fetch') || error?.message?.includes('ERR_ABORTED');
       
       // Retry logic for network errors
       if (retryCount < 2 && isNetworkError) {
@@ -83,7 +82,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchFeaturedProducts();
-  }, [fetchFeaturedProducts]);
+  }, []); // Fixed: Removed fetchFeaturedProducts from dependency array
 
   // Auto-retry mechanism for network errors
   useEffect(() => {

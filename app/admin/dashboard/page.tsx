@@ -67,7 +67,7 @@ export default function AdminDashboard() {
         } else {
           promoProducts = count || 0;
         }
-      } catch (promoErr) {
+      } catch (promoErr: any) {
         console.error('Promo products query failed:', promoErr);
         promoProducts = 0;
       }
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
         promoProducts: promoProducts,
         recentProducts: recentProducts || []
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching dashboard data:', error);
       // Set fallback data
       setStats({

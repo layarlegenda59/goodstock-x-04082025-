@@ -65,7 +65,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     filterProducts();
-  }, [products, searchQuery, categoryFilter, promoFilter, filterProducts]);
+  }, [products, searchQuery, categoryFilter, promoFilter, filterProducts]); // Fixed: Include all dependencies that affect filtering
 
   const fetchProducts = async () => {
     try {
@@ -76,7 +76,7 @@ export default function ProductsPage() {
 
       if (error) throw error;
       setProducts(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching products:', error);
       toast.error('Failed to fetch products');
     } finally {
@@ -121,7 +121,7 @@ export default function ProductsPage() {
 
       setProducts(products.filter(p => p.id !== productId));
       toast.success('Product deleted successfully');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting product:', error);
       toast.error('Failed to delete product');
     }
@@ -140,7 +140,7 @@ export default function ProductsPage() {
         p.id === productId ? { ...p, promo: !currentPromo } : p
       ));
       toast.success(`Product ${!currentPromo ? 'added to' : 'removed from'} promo`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating promo status:', error);
       toast.error('Failed to update promo status');
     }

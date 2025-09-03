@@ -100,11 +100,11 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
       // Reset error states on successful fetch
       setHasNetworkError(false);
       setRetryAttempts(0);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching category images:', error);
       
       // Check if it's a network-related error
-      const isNetworkError = error.name === 'AbortError' || error.message?.includes('fetch') || error.message?.includes('QUIC') || error.message?.includes('Failed to fetch');
+      const isNetworkError = error?.name === 'AbortError' || error?.message?.includes('fetch') || error?.message?.includes('QUIC') || error?.message?.includes('Failed to fetch');
       
       // Retry logic for network errors
       if (retryCount < 2 && isNetworkError) {
@@ -160,7 +160,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
       setCategoryImages(data || []);
       onImagesChange?.(data || []);
       toast.success('Data kategori berhasil diinisialisasi');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error initializing default images:', error);
       toast.error('Gagal menginisialisasi data kategori');
     }
@@ -336,7 +336,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
       reader.readAsDataURL(processedFile);
       
       toast.success('Gambar berhasil dioptimalkan ke rasio ideal');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error processing image:', error);
       toast.error('Gagal memproses gambar. Silakan coba lagi.');
     }
@@ -368,7 +368,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
             console.log('Category image converted to base64 successfully');
             setUploadProgress(100);
             resolve(base64String);
-          } catch (error) {
+          } catch (error: any) {
             console.error('Error converting to base64:', error);
             setUploadProgress(0);
             reject(new Error('Gagal mengkonversi gambar'));
@@ -390,7 +390,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
         
         reader.readAsDataURL(file);
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in uploadImageToSupabase:', error);
       setUploadProgress(0);
       throw error;
@@ -424,7 +424,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
       setEditingCategory(null);
       resetForm();
       fetchCategoryImages();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating category image:', error);
       toast.error('Gagal memperbarui gambar kategori');
     } finally {
@@ -477,7 +477,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
 
       toast.success(`Gambar kategori ${categoryImage.category_name} berhasil direset ke default`);
       fetchCategoryImages();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error resetting category image:', error);
       toast.error('Gagal mereset gambar kategori');
     } finally {
@@ -485,30 +485,7 @@ export default function CategoryImageManager({ onImagesChange }: CategoryImageMa
     }
   };
 
-  // Initial fetch and dependency on fetchCategoryImages
-  useEffect(() => {
-    fetchCategoryImages();
-  }, [fetchCategoryImages]);
-
-  // Auto-retry mechanism for network errors
-  useEffect(() => {
-    if (hasNetworkError && retryAttempts < 3) {
-      const retryDelay = Math.min(5000 * Math.pow(2, retryAttempts), 30000); // Max 30 seconds
-      console.log(`Auto-retry scheduled for category images in ${retryDelay/1000} seconds (attempt ${retryAttempts + 1})`);
-      
-      retryTimeoutRef.current = setTimeout(() => {
-        console.log('Auto-retrying to fetch category images...');
-        setRetryAttempts(prev => prev + 1);
-        fetchCategoryImages(0); // Reset retry count for fetchCategoryImages
-      }, retryDelay);
-      
-      return () => {
-        if (retryTimeoutRef.current) {
-          clearTimeout(retryTimeoutRef.current);
-        }
-      };
-    }
-  }, [hasNetworkError, retryAttempts, fetchCategoryImages]);
+  // Duplicate useEffect removed - auto-retry mechanism already handled above
 
   if (loading) {
     return (

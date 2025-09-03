@@ -20,7 +20,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
           console.error('Session error:', error);
           
           // Handle specific refresh token errors
-          if (error.message?.includes('refresh') || error.message?.includes('token')) {
+          if (error?.message?.includes('refresh') || error?.message?.includes('token')) {
             console.log('Clearing invalid session due to token error');
             await clearInvalidSession();
           }
@@ -41,13 +41,13 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         }
         setLoading(false);
         setIsInitialized(true);
-      } catch (error) {
-        console.error('Error getting initial session:', error);
-        setUser(null);
-        setProfile(null);
-        setLoading(false);
-        setIsInitialized(true);
-      }
+      } catch (error: any) {
+          console.error('Error getting initial session:', error);
+          setUser(null);
+          setProfile(null);
+          setLoading(false);
+          setIsInitialized(true);
+        }
     };
 
     // Fetch user profile from database
@@ -101,7 +101,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         if (profile) {
           setProfile(profile);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error in fetchUserProfile:', error);
       }
     };
@@ -134,11 +134,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
               await fetchUserProfile(session.user.id);
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error in auth state change:', error);
           
           // Handle specific refresh token errors
-          if (error.message?.includes('refresh') || error.message?.includes('token')) {
+          if (error?.message?.includes('refresh') || error?.message?.includes('token')) {
             console.log('Clearing invalid session due to token error in auth change');
             await clearInvalidSession();
           }

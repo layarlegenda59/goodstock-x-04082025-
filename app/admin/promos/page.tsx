@@ -75,7 +75,7 @@ export default function PromosPage() {
 
       if (error) throw error;
       setProducts(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching products:', error);
       toast.error('Failed to fetch products');
     } finally {
@@ -115,7 +115,7 @@ export default function PromosPage() {
         p.id === productId ? { ...p, promo: !currentPromo } : p
       ));
       toast.success(`Product ${!currentPromo ? 'added to' : 'removed from'} promo`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating promo status:', error);
       toast.error('Failed to update promo status');
     }
@@ -134,7 +134,7 @@ export default function PromosPage() {
         p.id === productId ? { ...p, discount } : p
       ));
       toast.success('Discount updated successfully');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating discount:', error);
       toast.error('Failed to update discount');
     }

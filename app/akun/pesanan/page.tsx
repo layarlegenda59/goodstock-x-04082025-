@@ -73,7 +73,7 @@ export default function PesananPage() {
       }
 
       setOrders(ordersData || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching orders:', error);
       toast.error('Gagal memuat riwayat pesanan');
     } finally {

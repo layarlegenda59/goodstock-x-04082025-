@@ -72,6 +72,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
       category: 'sepatu',
       subcategory: '',
       brand: '',
+      originalPrice: 0, // Fixed: Added missing originalPrice
       price: 0,
       discount: 0,
       stock: 0,
@@ -88,18 +89,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
                         selectedCategory === 'pakaian' ? clothingSizes : 
                         ['One Size'];
 
-  // Auto-calculate discounted price
-  useEffect(() => {
-    if (originalPrice && discount !== undefined) {
-      const discountedPrice = originalPrice - (originalPrice * (discount / 100));
-      form.setValue('price', Math.round(discountedPrice));
-    }
-  }, [originalPrice, discount, form]);
-
-  useEffect(() => {
-    fetchProduct();
-  }, [id, fetchProduct]);
-
+  // Fetch product data
   const fetchProduct = useCallback(async () => {
     try {
       const { data, error } = await supabase
@@ -138,6 +128,18 @@ export default function EditProductPage({ params }: EditProductPageProps) {
       setFetchLoading(false);
     }
   }, [id, form, router]);
+
+  // Auto-calculate discounted price
+  useEffect(() => {
+    if (originalPrice && discount !== undefined) {
+      const discountedPrice = originalPrice - (originalPrice * (discount / 100));
+      form.setValue('price', Math.round(discountedPrice));
+    }
+  }, [originalPrice, discount, form]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
 
   const onSubmit = async (data: ProductFormData) => {
     if (images.length === 0) {

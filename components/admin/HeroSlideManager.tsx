@@ -67,8 +67,6 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
-  const [hasNetworkError, setHasNetworkError] = useState(false);
-  const [retryAttempts, setRetryAttempts] = useState(0);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -83,12 +81,31 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
   const [optimisticSlides, setOptimisticSlides] = useState<HeroSlide[]>([]);
   const dragTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const uploadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchSlides = useCallback(async (retryCount = 0) => {
+  useEffect(() => {
+    fetchSlides();
+  }, []); // fetchSlides is stable with useCallback
+
+  // Sync optimistic slides with actual slides
+  useEffect(() => {
+    setOptimisticSlides(slides);
+  }, [slides]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (dragTimeoutRef.current) {
+        clearTimeout(dragTimeoutRef.current);
+      }
+      if (uploadTimeoutRef.current) {
+        clearTimeout(uploadTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const fetchSlides = useCallback(async () => {
     try {
       setLoading(true);
-      
       const { data, error } = await supabase
         .from('hero_slides')
         .select('*')
@@ -119,110 +136,15 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
       
       setSlides(mappedData);
       onSlidesChange?.(mappedData);
-      
-      // Reset error states on successful fetch
-      setHasNetworkError(false);
-      setRetryAttempts(0);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching slides:', error);
-      
-      // Check if it's a network-related error
-      const isNetworkError = error.name === 'AbortError' || error.message?.includes('fetch') || error.message?.includes('QUIC') || error.message?.includes('Failed to fetch');
-      
-      // Retry logic for network errors
-      if (retryCount < 2 && isNetworkError) {
-        console.log(`Retrying fetch slides (attempt ${retryCount + 1})...`);
-        setTimeout(() => fetchSlides(retryCount + 1), 1000 * (retryCount + 1)); // Exponential backoff
-        return;
-      }
-      
-      // Set network error state for auto-retry mechanism
-      if (isNetworkError && retryCount >= 2) {
-        setHasNetworkError(true);
-      }
-      
-      // Fallback to empty array with user-friendly message
-      setSlides([]);
-      onSlidesChange?.([]);
-      
-      // Show user-friendly error message
-      if (error.name === 'AbortError') {
-        toast.error('Koneksi timeout. Akan mencoba lagi otomatis.');
-      } else if (isNetworkError) {
-        toast.error('Masalah koneksi jaringan. Sistem akan mencoba memuat ulang otomatis.');
-      } else {
-        toast.error('Gagal memuat data slide. Silakan refresh halaman.');
-      }
+      toast.error('Gagal memuat data slide');
     } finally {
       setLoading(false);
     }
-  }, [onSlidesChange]);
+  }, []); // useCallback dependency array
 
-  // Initial fetch and dependency on fetchSlides
-  useEffect(() => {
-    fetchSlides();
-  }, [fetchSlides]);
-
-  // Auto-retry mechanism for network errors
-  useEffect(() => {
-    if (hasNetworkError && retryAttempts < 3) {
-      const retryDelay = Math.min(5000 * Math.pow(2, retryAttempts), 30000); // Max 30 seconds
-      console.log(`Auto-retry scheduled in ${retryDelay/1000} seconds (attempt ${retryAttempts + 1})`);
-      
-      retryTimeoutRef.current = setTimeout(() => {
-        console.log('Auto-retrying to fetch slides...');
-        setRetryAttempts(prev => prev + 1);
-        fetchSlides(0); // Reset retry count for fetchSlides
-      }, retryDelay);
-      
-      return () => {
-        if (retryTimeoutRef.current) {
-          clearTimeout(retryTimeoutRef.current);
-        }
-      };
-    }
-  }, [hasNetworkError, retryAttempts, fetchSlides]);
-
-  // Sync optimistic slides with actual slides
-  useEffect(() => {
-    setOptimisticSlides(slides);
-  }, [slides]);
-
-  // Cleanup timeouts on unmount
-  useEffect(() => {
-    return () => {
-      if (dragTimeoutRef.current) {
-        clearTimeout(dragTimeoutRef.current);
-      }
-      if (uploadTimeoutRef.current) {
-        clearTimeout(uploadTimeoutRef.current);
-      }
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleImageSelect = useCallback((file: File | null) => {
-    // Handle null or empty file (when image is removed)
-    if (!file || file.size === 0) {
-      setFormData(prev => ({ ...prev, image: null }));
-      setImagePreview(null);
-      return;
-    }
-    
-    setFormData(prev => ({ ...prev, image: file }));
-    
-    // Create preview using FileReader for immediate display
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      setImagePreview(result);
-      console.log('Image preview set from FileReader');
-    };
-    reader.readAsDataURL(file);
-  }, []);
-
+  // Fixed uploadImageToSupabase function with proper error handling
   const uploadImageToSupabase = async (file: File): Promise<string> => {
     try {
       // Validasi file
@@ -276,23 +198,23 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
         // Fallback to base64 if Supabase is not available
         return await convertFileToBase64(file);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in uploadImageToSupabase:', error);
       setUploadProgress(0);
-      
-      // Final fallback
-      console.log('Using final fallback image due to error...');
-      return 'https://images.pexels.com/photos/1182825/pexels-photo-1182825.jpeg';
+      throw error;
     }
   };
 
+  // Fixed convertFileToBase64 function
   const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
+      reader.onload = () => {
+        setUploadProgress(100);
+        resolve(reader.result as string);
+      };
       reader.onerror = reject;
       reader.readAsDataURL(file);
-      setUploadProgress(100);
     });
   };
 
@@ -406,7 +328,7 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
       // Update optimistic slides immediately for better UX
       if (formData.image && data?.[0]) {
         // Use the base64 preview for immediate display since Supabase URLs might fail
-        const displayUrl = imagePreview.startsWith('data:') ? imagePreview : imageUrl;
+        const displayUrl = imagePreview && imagePreview.startsWith('data:') ? imagePreview : imageUrl;
         
         setOptimisticSlides(prev => 
           prev.map(s => s.id === editingSlide.id ? { ...s, image_url: displayUrl } : s)
@@ -437,7 +359,7 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     }
   };
 
-  const handleDeleteSlide = useCallback(async (slideId: string) => {
+  const handleDeleteSlide = async (slideId: string) => {
     // Validasi autentikasi admin
     if (!isAdminAuthenticated || !adminUser || adminProfile?.role !== 'admin') {
       toast.error('Anda harus login sebagai admin untuk melakukan perubahan');
@@ -454,13 +376,13 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
 
       toast.success('Slide berhasil dihapus');
       fetchSlides();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting slide:', error);
       toast.error('Gagal menghapus slide');
     }
-  }, [isAdminAuthenticated, adminUser, adminProfile?.role, fetchSlides]);
+  };
 
-  const handleReorderSlides = useCallback(async (newSlides: HeroSlide[]) => {
+  const handleReorderSlides = async (newSlides: HeroSlide[]) => {
     // Validasi autentikasi admin
     if (!isAdminAuthenticated || !adminUser || adminProfile?.role !== 'admin') {
       toast.error('Anda harus login sebagai admin untuk melakukan perubahan');
@@ -488,88 +410,15 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
       setSlides(newSlides);
       onSlidesChange?.(newSlides);
       toast.success('Urutan slide berhasil diperbarui');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error reordering slides:', error);
       toast.error('Gagal mengubah urutan slide');
       // Revert optimistic update
       fetchSlides();
     }
-  }, [isAdminAuthenticated, adminUser, adminProfile?.role, onSlidesChange]);
+  };
 
-  const handleDragStart = useCallback((e: React.DragEvent, slideId: string) => {
-    // Clear any existing timeout
-    if (dragTimeoutRef.current) {
-      clearTimeout(dragTimeoutRef.current);
-    }
-    
-    setDraggedSlideId(slideId);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', slideId);
-    
-    // Add visual feedback with slight delay
-    dragTimeoutRef.current = setTimeout(() => {
-      const draggedElement = e.currentTarget as HTMLElement;
-      if (draggedElement && draggedElement.style) {
-        draggedElement.style.opacity = '0.5';
-      }
-    }, 100);
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    
-    // Add visual feedback for drop zone
-    const target = e.currentTarget as HTMLElement;
-    if (target && target.style) {
-      target.style.borderColor = '#3b82f6';
-      target.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
-    }
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent, targetId: string) => {
-    e.preventDefault();
-    
-    // Clear drag timeout and reset visual feedback
-    if (dragTimeoutRef.current) {
-      clearTimeout(dragTimeoutRef.current);
-    }
-    
-    const target = e.currentTarget as HTMLElement;
-    if (target && target.style) {
-      target.style.borderColor = '';
-      target.style.backgroundColor = '';
-      target.style.opacity = '';
-    }
-    
-    if (!draggedSlideId || draggedSlideId === targetSlideId) {
-      setDraggedSlideId(null);
-      return;
-    }
-    
-    const draggedIndex = optimisticSlides.findIndex(s => s.id === draggedSlideId);
-    const targetIndex = optimisticSlides.findIndex(s => s.id === targetSlideId);
-    
-    const newSlides = [...optimisticSlides];
-    const [draggedSlide] = newSlides.splice(draggedIndex, 1);
-    newSlides.splice(targetIndex, 0, draggedSlide);
-    
-    // Optimistic update for immediate UI feedback
-    setOptimisticSlides(newSlides);
-    
-    // Update order in database with debouncing
-    if (uploadTimeoutRef.current) {
-      clearTimeout(uploadTimeoutRef.current);
-    }
-    
-    uploadTimeoutRef.current = setTimeout(() => {
-      handleReorderSlides(newSlides);
-    }, 300);
-    
-    setDraggedSlideId(null);
-  }, [draggedSlideId, optimisticSlides, handleReorderSlides]);
-
-  const resetForm = useCallback(() => {
+  const resetForm = () => {
     setFormData({
       title: '',
       subtitle: '',
@@ -579,9 +428,23 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
     });
     setImagePreview(null);
     setUploadProgress(0);
-  }, []);
+  };
 
-  const openEditDialog = useCallback((slide: HeroSlide) => {
+  const handleImageChange = (file: File | null) => {
+    setFormData(prev => ({ ...prev, image: file }));
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+  const openEditDialog = (slide: HeroSlide) => {
     setEditingSlide(slide);
     setFormData({
       title: slide.title,
@@ -590,262 +453,300 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
       link: slide.cta_link,
       image: null
     });
-    // Set image preview, but let DragDropImage handle loading errors with onError fallback
     setImagePreview(slide.image_url);
     setIsEditDialogOpen(true);
-  }, []);
+  };
 
-  const slidesWithMemo = useMemo(() => {
-    return optimisticSlides.map((slide) => (
-      <div
-        key={slide.id}
-        className="border rounded-lg p-4 bg-card"
-        draggable
-        onDragStart={(e) => handleDragStart(e, slide.id)}
-        onDragOver={handleDragOver}
-        onDrop={(e) => handleDrop(e, slide.id)}
-      >
-        <div className="flex items-center gap-4">
-          <div className="cursor-move">
-            <GripVertical className="w-5 h-5 text-muted-foreground" />
-          </div>
-          <div className="relative w-24 h-16 rounded overflow-hidden flex-shrink-0">
-            <Image
-              src={slide.image_url}
-              alt={slide.title}
-              fill
-              className="object-cover"
-              onError={(e) => {
-                console.log('Slide thumbnail load error:', slide.image_url);
-                const target = e.currentTarget;
-                if (target.src !== '/placeholder-image.svg') {
-                  target.src = '/placeholder-image.svg';
-                }
-              }}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium truncate">{slide.title}</h3>
-            <p className="text-sm text-muted-foreground truncate">{slide.subtitle}</p>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                {slide.cta_text}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                → {slide.cta_link}
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => openEditDialog(slide)}
-            >
-              <Edit className="w-4 h-4" />
-            </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button size="sm" variant="outline">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Hapus Slide</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Apakah Anda yakin ingin menghapus slide &quot;{slide.title}&quot;? 
-                    Tindakan ini tidak dapat dibatalkan.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Batal</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => handleDeleteSlide(slide.id)}>
-                    Hapus
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </div>
-      </div>
-    ));
-  }, [optimisticSlides, handleDragStart, handleDragOver, handleDrop, openEditDialog, handleDeleteSlide]);
+  const handleDragStart = (e: React.DragEvent, slideId: string) => {
+    setDraggedSlideId(slideId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
 
-  // Tampilkan pesan error jika admin belum terautentikasi
-  if (!isAdminAuthenticated || !adminUser || adminProfile?.role !== 'admin') {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ImageIcon className="w-5 h-5" />
-            Kelola Slide Hero Section
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center py-8 text-center">
-            <div>
-              <p className="text-muted-foreground mb-2">Anda harus login sebagai admin untuk mengakses fitur ini</p>
-              <Button onClick={() => window.location.href = '/admin/login'}>Login Admin</Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, targetSlideId: string) => {
+    e.preventDefault();
+    
+    if (!draggedSlideId || draggedSlideId === targetSlideId) {
+      setDraggedSlideId(null);
+      return;
+    }
+
+    const draggedIndex = slides.findIndex(s => s.id === draggedSlideId);
+    const targetIndex = slides.findIndex(s => s.id === targetSlideId);
+    
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedSlideId(null);
+      return;
+    }
+
+    const newSlides = [...slides];
+    const [draggedSlide] = newSlides.splice(draggedIndex, 1);
+    newSlides.splice(targetIndex, 0, draggedSlide);
+    
+    // Update order_index for all slides
+    const reorderedSlides = newSlides.map((slide, index) => ({
+      ...slide,
+      order_index: index
+    }));
+
+    setSlides(reorderedSlides);
+    setDraggedSlideId(null);
+    
+    // Save to database
+    handleReorderSlides(reorderedSlides);
+  };
+
+  const slidesToDisplay = useMemo(() => {
+    return optimisticSlides.length > 0 ? optimisticSlides : slides;
+  }, [optimisticSlides, slides]);
 
   if (loading) {
     return (
-      <Card>
+      <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <ImageIcon className="w-5 h-5" />
-            Kelola Slide Hero Section
+            <Loader2 className="h-5 w-5 animate-spin" />
+            Memuat Hero Slides...
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin" />
-          </div>
-        </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ImageIcon className="w-5 h-5" />
-          Kelola Slide Hero Section
-        </CardTitle>
-        <CardDescription>
-          Tambah, edit, hapus, dan atur urutan slide pada hero banner
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">
-              Total: {optimisticSlides.length} slide
-            </p>
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={resetForm}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Tambah Slide
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Tambah Slide Baru</DialogTitle>
-                  <DialogDescription>
-                    Buat slide baru untuk hero banner
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="title">Judul *</Label>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <ImageIcon className="h-5 w-5" />
+              Kelola Slide Hero Section
+            </CardTitle>
+            <CardDescription>
+              Tambah, edit, hapus, dan atur urutan slide pada hero banner
+            </CardDescription>
+          </div>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Tambah Slide
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Tambah Slide Baru</DialogTitle>
+                <DialogDescription>
+                  Buat slide hero banner baru dengan gambar dan teks yang menarik
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Judul *</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Masukkan judul slide"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="subtitle">Subtitle</Label>
+                  <Textarea
+                    id="subtitle"
+                    value={formData.subtitle}
+                    onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
+                    placeholder="Masukkan subtitle slide"
+                    rows={3}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="cta">Teks Tombol</Label>
                     <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Masukkan judul slide"
+                      id="cta"
+                      value={formData.cta}
+                      onChange={(e) => setFormData(prev => ({ ...prev, cta: e.target.value }))}
+                      placeholder="Shop Now"
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="subtitle">Subtitle</Label>
-                    <Textarea
-                      id="subtitle"
-                      value={formData.subtitle}
-                      onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
-                      placeholder="Masukkan subtitle slide"
-                      rows={2}
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="link">Link Tombol</Label>
+                    <Input
+                      id="link"
+                      value={formData.link}
+                      onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
+                      placeholder="/kategori/sepatu"
                     />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="cta">Teks Tombol</Label>
-                      <Input
-                        id="cta"
-                        value={formData.cta}
-                        onChange={(e) => setFormData(prev => ({ ...prev, cta: e.target.value }))}
-                        placeholder="Shop Now"
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="link">Link Tujuan</Label>
-                      <Input
-                        id="link"
-                        value={formData.link}
-                        onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
-                        placeholder="/kategori/sepatu"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="image">Gambar Slide *</Label>
-                    <DragDropImage
-                      onImageSelect={handleImageSelect}
-                      currentImage={imagePreview || undefined}
-                      className="min-h-[150px]"
-                      disabled={saving}
-                    />
-                    {uploadProgress > 0 && uploadProgress < 100 && (
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
-                    )}
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                    Batal
-                  </Button>
-                  <Button onClick={handleAddSlide} disabled={saving}>
-                    {saving ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Menyimpan...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        Simpan
-                      </>
-                    )}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          {optimisticSlides.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <ImageIcon className="mx-auto h-12 w-12 mb-4" />
-              <p>Belum ada slide. Tambah slide pertama untuk memulai.</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {slidesWithMemo}
-            </div>
-          )}
+                
+                <div className="space-y-2">
+                  <Label>Gambar Slide *</Label>
+                  <DragDropImage
+                    onImageChange={handleImageChange}
+                    preview={imagePreview}
+                    uploadProgress={uploadProgress}
+                    maxSize={10}
+                    acceptedTypes={['image/jpeg', 'image/jpg', 'image/png', 'image/webp']}
+                  />
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsAddDialogOpen(false);
+                    resetForm();
+                  }}
+                  disabled={saving}
+                >
+                  Batal
+                </Button>
+                <Button
+                  onClick={handleAddSlide}
+                  disabled={saving || !formData.title || !formData.image}
+                  className="flex items-center gap-2"
+                >
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Menyimpan...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      Simpan Slide
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
-
+      </CardHeader>
+      
+      <CardContent>
+        <div className="text-sm text-muted-foreground mb-4">
+          Total: {slidesToDisplay.length} slide
+        </div>
+        
+        {slidesToDisplay.length === 0 ? (
+          <div className="text-center py-8">
+            <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">Belum ada slide hero banner</p>
+            <p className="text-sm text-muted-foreground mt-1">Klik "Tambah Slide" untuk membuat slide pertama</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {slidesToDisplay.map((slide, index) => (
+              <div
+                key={slide.id}
+                className={`border rounded-lg p-4 transition-all duration-200 ${
+                  draggedSlideId === slide.id ? 'opacity-50 scale-95' : 'hover:shadow-md'
+                }`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, slide.id)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, slide.id)}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex items-center gap-2">
+                    <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+                    <span className="text-sm font-medium text-muted-foreground">#{index + 1}</span>
+                  </div>
+                  
+                  <div className="relative w-24 h-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
+                    <Image
+                      src={slide.image_url}
+                      alt={slide.title}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder-image.svg';
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm truncate">{slide.title}</h3>
+                    {slide.subtitle && (
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{slide.subtitle}</p>
+                    )}
+                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                      <span>{slide.cta_text}</span>
+                      <span>→ {slide.cta_link}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => openEditDialog(slide)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Hapus Slide</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Apakah Anda yakin ingin menghapus slide "{slide.title}"? 
+                            Tindakan ini tidak dapat dibatalkan.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Batal</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteSlide(slide.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Hapus
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edit Slide</DialogTitle>
               <DialogDescription>
-                Perbarui informasi slide
+                Perbarui informasi slide hero banner
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
                 <Label htmlFor="edit-title">Judul *</Label>
                 <Input
                   id="edit-title"
@@ -854,18 +755,20 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
                   placeholder="Masukkan judul slide"
                 />
               </div>
-              <div className="grid gap-2">
+              
+              <div className="space-y-2">
                 <Label htmlFor="edit-subtitle">Subtitle</Label>
                 <Textarea
                   id="edit-subtitle"
                   value={formData.subtitle}
                   onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
                   placeholder="Masukkan subtitle slide"
-                  rows={2}
+                  rows={3}
                 />
               </div>
+              
               <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
+                <div className="space-y-2">
                   <Label htmlFor="edit-cta">Teks Tombol</Label>
                   <Input
                     id="edit-cta"
@@ -874,8 +777,9 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
                     placeholder="Shop Now"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-link">Link Tujuan</Label>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="edit-link">Link Tombol</Label>
                   <Input
                     id="edit-link"
                     value={formData.link}
@@ -884,37 +788,47 @@ export default function HeroSlideManager({ onSlidesChange }: HeroSlideManagerPro
                   />
                 </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-image">Gambar Slide</Label>
+              
+              <div className="space-y-2">
+                <Label>Gambar Slide</Label>
                 <DragDropImage
-                  onImageSelect={handleImageSelect}
-                  currentImage={imagePreview || undefined}
-                  className="min-h-[150px]"
-                  disabled={saving}
+                  onImageChange={handleImageChange}
+                  preview={imagePreview}
+                  uploadProgress={uploadProgress}
+                  maxSize={10}
+                  acceptedTypes={['image/jpeg', 'image/jpg', 'image/png', 'image/webp']}
                 />
-                {uploadProgress > 0 && uploadProgress < 100 && (
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                      style={{ width: `${uploadProgress}%` }}
-                    />
-                  </div>
-                )}
+                <p className="text-xs text-muted-foreground">
+                  Kosongkan jika tidak ingin mengubah gambar
+                </p>
               </div>
             </div>
+            
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsEditDialogOpen(false);
+                  setEditingSlide(null);
+                  resetForm();
+                }}
+                disabled={saving}
+              >
                 Batal
               </Button>
-              <Button onClick={handleEditSlide} disabled={saving}>
+              <Button
+                onClick={handleEditSlide}
+                disabled={saving || !formData.title}
+                className="flex items-center gap-2"
+              >
                 {saving ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Memperbarui...
                   </>
                 ) : (
                   <>
-                    <Save className="w-4 h-4 mr-2" />
+                    <Save className="h-4 w-4" />
                     Perbarui
                   </>
                 )}
