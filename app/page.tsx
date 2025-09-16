@@ -26,8 +26,9 @@ export default function HomePage() {
         .from('products')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(8); // Fixed: Removed invalid abortSignal method
+        .limit(8);
 
+      // Clear timeout immediately after successful request
       clearTimeout(timeoutId);
 
       if (error) throw error;
@@ -58,6 +59,11 @@ export default function HomePage() {
     } catch (error: any) {
       console.error('Error fetching featured products:', error);
       
+      // Ensure timeout is cleared even in error cases
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      
       // Check if it's a network-related error
       const isNetworkError = error?.name === 'AbortError' || error?.message?.includes('fetch') || error?.message?.includes('QUIC') || error?.message?.includes('Failed to fetch') || error?.message?.includes('ERR_ABORTED');
       
@@ -82,7 +88,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchFeaturedProducts();
-  }, []); // Fixed: Removed fetchFeaturedProducts from dependency array
+  }, []); // Empty dependency array is correct here
 
   // Auto-retry mechanism for network errors
   useEffect(() => {
@@ -102,7 +108,7 @@ export default function HomePage() {
         }
       };
     }
-  }, [hasNetworkError, retryAttempts, fetchFeaturedProducts]);
+  }, [hasNetworkError, retryAttempts]); // Removed fetchFeaturedProducts from dependency array
 
   // Cleanup timeout on unmount
   useEffect(() => {

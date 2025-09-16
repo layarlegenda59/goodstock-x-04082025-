@@ -23,7 +23,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   useEffect(() => {
     setInWishlist(isInWishlist(product.id));
     setIsHydrated(true);
-  }, [isInWishlist, product.id]);
+  }, [product.id]); // Fixed: Removed isInWishlist function from dependencies
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
