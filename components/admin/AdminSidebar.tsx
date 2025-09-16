@@ -22,11 +22,11 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Products', href: '/admin/products', icon: Package },
-  { name: 'Add Product', href: '/admin/products/add', icon: Plus },
-  { name: 'Promos', href: '/admin/promos', icon: Tag },
+  { name: 'Kelola Produk', href: '/admin/products', icon: Package },
+  { name: 'Tambah Produk', href: '/admin/products/add', icon: Plus },
+  { name: 'Kelola Promo', href: '/admin/promos', icon: Tag },
   { name: 'Hero Slides', href: '/admin/hero-slides', icon: ImageIcon },
-  { name: 'Category Images', href: '/admin/category-images', icon: Layers },
+  { name: 'Gambar Kategori', href: '/admin/category-images', icon: Layers },
 ];
 
 export default function AdminSidebar() {
@@ -54,37 +54,40 @@ export default function AdminSidebar() {
 
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 z-50 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 lg:translate-x-0
-        transition-all duration-300 ease-in-out
+        fixed top-0 left-0 z-50 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 w-64 lg:translate-x-0
+        transition-all duration-300 ease-in-out shadow-lg lg:shadow-none
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between p-responsive border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3">
               <Image 
-                src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
-                alt="Goodstock-X"
-                width={100}
-                height={24}
-                style={{ width: 'auto', height: 'auto' }}
-                className="h-6 w-auto"
-              />
-              <span className="text-responsive-sm font-medium text-gray-600 dark:text-gray-400">Admin</span>
+            src="/Logo Goodstock-X.png"
+            alt="Goodstock-X"
+            width={50}
+            height={12}
+            priority
+            style={{ width: 'auto', height: 'auto' }}
+            className="h-3 w-auto object-contain"
+          />
+              <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md">
+                Admin
+              </span>
             </div>
           </div>
 
           {/* Admin Info */}
-          <div className="p-responsive border-b border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-responsive-sm font-medium">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-md">
                 {adminProfile?.full_name?.charAt(0) || adminProfile?.email?.charAt(0) || 'A'}
               </div>
-              <div>
-                <div className="text-responsive-sm font-medium text-gray-900 dark:text-white">
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                   {adminProfile?.full_name || 'Admin'}
                 </div>
-                <div className="text-responsive-xs text-gray-500 dark:text-gray-400">
+                <div className="text-xs text-gray-600 dark:text-gray-400">
                   Administrator
                 </div>
               </div>
@@ -92,7 +95,10 @@ export default function AdminSidebar() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-responsive space-y-2">
+          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-3">
+              Menu Utama
+            </div>
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -102,30 +108,32 @@ export default function AdminSidebar() {
                   key={item.name}
                   href={item.href}
                   className={`
-                    flex items-center gap-3 px-3 py-2 rounded-lg transition-colors touch-target
+                    flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group
                     ${isActive 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      ? 'bg-blue-600 text-white shadow-md' 
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                     }
                   `}
                   onClick={() => setSidebarOpen(false)}
                 >
-                  <Icon className="icon-responsive flex-shrink-0" />
-                  <span className="text-responsive-sm font-medium">{item.name}</span>
+                  <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${
+                    isActive ? 'text-white' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'
+                  }`} />
+                  <span className="text-sm font-medium">{item.name}</span>
                 </Link>
               );
             })}
           </nav>
 
           {/* Logout */}
-          <div className="p-responsive border-t border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <Button
               variant="ghost"
               onClick={handleLogout}
-              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 touch-target"
+              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 py-3 h-auto"
             >
-              <LogOut className="icon-responsive flex-shrink-0" />
-              <span className="ml-3 text-responsive-sm">Logout</span>
+              <LogOut className="w-5 h-5 flex-shrink-0" />
+              <span className="ml-3 text-sm font-medium">Keluar</span>
             </Button>
           </div>
         </div>
@@ -136,9 +144,9 @@ export default function AdminSidebar() {
         variant="ghost"
         size="sm"
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-white dark:bg-gray-800 border shadow-md touch-target"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white dark:bg-gray-800 border shadow-lg hover:shadow-xl transition-shadow p-2"
       >
-        {sidebarOpen ? <X className="icon-responsive-sm" /> : <Menu className="icon-responsive-sm" />}
+        {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </Button>
     </>
   );

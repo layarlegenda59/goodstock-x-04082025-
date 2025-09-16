@@ -4,11 +4,16 @@ import CategoryImageManager from '@/components/admin/CategoryImageManager';
 
 export default function CategoryImagesPage() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white">
-          Kelola Gambar Kategori Populer
-        </h1>
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+            Gambar Kategori
+          </h1>
+          <p className="text-base text-gray-600 dark:text-gray-400 mt-2">
+            Kelola gambar kategori populer di halaman utama
+          </p>
+        </div>
       </div>
       
       <CategoryImageManager />

@@ -104,12 +104,13 @@ export default function AdminLoginPage() {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <Image 
-              src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
+              src="/Logo Goodstock-X.png"
               alt="Goodstock-X"
-              width={150}
-              height={48}
+              width={60}
+              height={16}
+              priority
               style={{ width: 'auto', height: 'auto' }}
-              className="h-10 sm:h-12 w-auto"
+              className="h-4 sm:h-5 w-auto object-contain"
             />
           </div>
           <CardTitle className="text-responsive-2xl font-bold">Admin Login</CardTitle>

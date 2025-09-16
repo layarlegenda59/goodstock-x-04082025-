@@ -65,7 +65,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     filterProducts();
-  }, [products, searchQuery, categoryFilter, promoFilter, filterProducts]); // Fixed: Include all dependencies that affect filtering
+  }, [products, searchQuery, categoryFilter, promoFilter]); // Fixed: Remove filterProducts from dependencies to avoid infinite loop
 
   const fetchProducts = async () => {
     try {
@@ -87,28 +87,29 @@ export default function ProductsPage() {
   const filterProducts = useCallback(() => {
     let filtered = products;
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchQuery.toLowerCase())
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Category filter
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(product => product.category === categoryFilter);
     }
 
-    // Promo filter
     if (promoFilter !== 'all') {
-      filtered = filtered.filter(product => 
-        promoFilter === 'promo' ? product.promo : !product.promo
-      );
+      const isPromo = promoFilter === 'promo';
+      filtered = filtered.filter(product => product.promo === isPromo);
     }
 
     setFilteredProducts(filtered);
   }, [products, searchQuery, categoryFilter, promoFilter]);
+
+  useEffect(() => {
+    filterProducts();
+  }, [filterProducts]); // Fixed: Use filterProducts callback instead of individual dependencies
 
   const handleDeleteProduct = async (productId: string) => {
     try {

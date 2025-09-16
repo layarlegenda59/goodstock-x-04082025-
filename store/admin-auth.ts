@@ -28,18 +28,18 @@ export const useAdminAuthStore = create<AdminAuthStore>()(
     (set, get) => ({
       adminUser: null,
       adminProfile: null,
-      isAdminLoading: true,
+      isAdminLoading: false,
       isAdminAuthenticated: false,
       
       setAdminUser: (adminUser) => set({ 
         adminUser, 
-        isAdminAuthenticated: !!adminUser
-        // Don't set loading to false here, let setAdminProfile handle it
+        isAdminAuthenticated: !!adminUser && !!get().adminProfile
       }),
       
       setAdminProfile: (adminProfile) => set({ 
         adminProfile,
-        isAdminLoading: false
+        isAdminLoading: false,
+        isAdminAuthenticated: !!get().adminUser && !!adminProfile
       }),
       
       setAdminLoading: (isAdminLoading) => set({ isAdminLoading }),

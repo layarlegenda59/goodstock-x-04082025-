@@ -98,11 +98,13 @@ export default function Header() {
               {/* Logo */}
               <Link href="/" className="flex items-center">
                 <Image 
-                  src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
+                  src="/Logo Goodstock-X.png"
                   alt="Goodstock-X"
-                  width={200}
-                  height={56}
-                  className="h-14 w-auto max-w-[200px]"
+                  width={80}
+                  height={20}
+                  priority
+                  style={{ width: 'auto', height: 'auto' }}
+                  className="h-5 w-auto max-w-[80px] object-contain"
                 />
               </Link>
 
@@ -279,13 +281,13 @@ export default function Header() {
 
             <Link href="/" className="flex-1 flex justify-center">
               <Image 
-                src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
+                src="/Logo Goodstock-X.png"
                 alt="Goodstock-X"
-                width={168}
-                height={48}
+                width={70}
+                height={20}
                 priority
                 style={{ width: 'auto', height: 'auto' }}
-                className="h-10 w-auto sm:h-12 max-w-[144px] sm:max-w-[168px]"
+                className="h-4 w-auto sm:h-5 max-w-[60px] sm:max-w-[70px] object-contain"
               />
             </Link>
 

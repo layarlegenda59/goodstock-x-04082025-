@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,10 +62,6 @@ export default function PromosPage() {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    filterProducts();
-  }, [products, searchQuery, categoryFilter]);
-
   const fetchProducts = async () => {
     try {
       const { data, error } = await supabase
@@ -83,24 +79,31 @@ export default function PromosPage() {
     }
   };
 
-  const filterProducts = () => {
+  const filterProducts = useCallback(() => {
     let filtered = products;
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchQuery.toLowerCase())
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Category filter
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(product => product.category === categoryFilter);
     }
 
     setFilteredProducts(filtered);
-  };
+  }, [products, searchQuery, categoryFilter]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    filterProducts();
+  }, [filterProducts]);
 
   const togglePromo = async (productId: string, currentPromo: boolean) => {
     try {

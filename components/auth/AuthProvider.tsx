@@ -111,7 +111,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state change:', event, session?.user?.email);
         
         try {
           if (event === 'SIGNED_IN' && session?.user) {
@@ -154,7 +153,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     );
 
     return () => subscription.unsubscribe();
-  }, [setUser, setProfile, setLoading, router]);
+  }, []); // Empty dependency array since we're using stable functions
 
   // Prevent hydration mismatch by waiting for initialization
   if (!isInitialized) {

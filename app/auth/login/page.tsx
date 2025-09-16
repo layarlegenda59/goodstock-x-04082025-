@@ -56,12 +56,13 @@ export default function LoginPage() {
         <CardHeader className="text-center pb-4">
           <div className="flex justify-center mb-3">
             <Image 
-              src="https://rkfkxhfvldavnirarytg.supabase.co/storage/v1/object/sign/material/Logo%20goodstock-x%20dengan%20tulisan.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81ZDE5M2Q1NS1kYTM5LTQ3YzQtOTUzNC00YTNlNzczMGZhOGUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYXRlcmlhbC9Mb2dvIGdvb2RzdG9jay14IGRlbmdhbiB0dWxpc2FuLnBuZyIsImlhdCI6MTc1NDE0MjkyMywiZXhwIjoxNzg1Njc4OTIzfQ.WyK0q_2J6diVJ1SBDjPJa0TgyFwwlT0RB8H38lieHqY"
+              src="/Logo Goodstock-X.png"
               alt="Goodstock-X"
-              width={120}
-              height={40}
+              width={60}
+              height={20}
+              priority
               style={{ width: 'auto', height: 'auto' }}
-              className="h-8 sm:h-10 w-auto"
+              className="h-4 sm:h-5 w-auto object-contain"
             />
           </div>
           <CardTitle className="text-lg sm:text-xl font-bold">Masuk ke Akun</CardTitle>
